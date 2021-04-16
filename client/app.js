@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { Fragment } from 'react';
 
-import Navbar from './components/Navbar'
-import Routes from './routes'
+import Sidebar from './components/Sidebar';
+import Routes from './routes';
 
 const App = () => {
   return (
-    <div>
-      <Navbar />
+    <Fragment>
+      <Sidebar />
       <Routes />
-    </div>
-  )
-}
+    </Fragment>
+  );
+};
 
-export default App
+export default App;
