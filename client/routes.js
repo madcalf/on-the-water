@@ -17,6 +17,7 @@ class Routes extends Component {
       <Fragment>
         <Switch>
           <Route path="/map" component={MapViewer} />
+          <Redirect to="/map" />
           <Route path="/home" component={Home} />
         </Switch>
       </Fragment>
