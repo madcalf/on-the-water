@@ -1,3 +1,7 @@
+:root {
+  --angle: -20deg;
+}
+
 * {
   box-sizing: border-box;
   font-family: arial, sans-serif;
@@ -28,4 +32,14 @@
 .leaflet-container {
   width: 100%;
   height: 100vh;
+}
+
+// temp to see how we can handle rotation etc
+.map-marker {
+  // width: 50px;
+  transform: rotate(20deg);
+  &:hover {
+    // --angle: 10deg;
+    transform: rotate(-10deg);
+  }
 }

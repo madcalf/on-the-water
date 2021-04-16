@@ -1,6 +1,10 @@
+:root {
+  --angle: -20deg;
+}
+
 * {
   -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+          box-sizing: border-box;
   font-family: arial, sans-serif;
 }
 
@@ -24,12 +28,22 @@
 
 #map {
   border: 1px solid black;
-  width: 100%;
+  width: 90%;
   height: 100vh;
 }
 
 .leaflet-container {
   width: 100%;
   height: 100vh;
+}
+
+.map-marker {
+  -webkit-transform: rotate(20deg);
+          transform: rotate(20deg);
+}
+
+.map-marker:hover {
+  -webkit-transform: rotate(-10deg);
+          transform: rotate(-10deg);
 }
 /*# sourceMappingURL=style.css.map */

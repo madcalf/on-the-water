@@ -5,11 +5,14 @@ import { Icon } from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 Icon.Default.imagePath = 'leaflet-images/';
+const style = document.documentElement.style;
 
-// var redMarker = L.AwesomeMarkers.icon({
-//   icon: 'coffee',
-//   markerColor: 'red',
-// });
+function rotateMarker() {
+  console.log('ROTATE MARKER??');
+  var img = document.querySelector('map-marker');
+  img.style.transform = 'rotate(25deg)';
+}
+
 const icon = new Icon({
   iconUrl: Icon.Default.imagePath + 'favicon.png',
   iconSize: [25, 25],
@@ -39,9 +42,17 @@ export const MapViewer = (props) => {
         >
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url="//tileservice.charts.noaa.gov/tiles/50000_1/{z}/{x}/{y}.png"
           />
-          <Marker position={[37.386051, -122.083855]} icon={icon}>
+          <Marker
+            position={[37.386051, -122.083855]}
+            icon={icon}
+            onClick={() => {
+              console.log('ROTATE MARKER??');
+              // var img = document.querySelector('map-marker');
+              // img.style.transform = 'rotate(25deg)';
+            }}
+          >
             <Popup>
               A pretty CSS3 popup. <br /> Easily customizable.
             </Popup>
