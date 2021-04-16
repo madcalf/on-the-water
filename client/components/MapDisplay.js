@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 /**
  * COMPONENT
  */
-export const Home = (props) => {
+export const MapDisplay = (props) => {
   const { username } = props;
 
   return (
     <div>
-      <h3>Welcome, {username}</h3>
+      <h1>MAP HERE??</h1>
     </div>
   );
 };
@@ -23,4 +23,4 @@ const mapState = (state) => {
   };
 };
 
-export default connect(mapState)(Home);
+export default connect(mapState)(MapDisplay);
