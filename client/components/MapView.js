@@ -124,23 +124,21 @@ export const MapView = (props) => {
           <LayerGroup>
             {baskCurrents.map((station, index) => {
               const data = {};
-              // can't use the noaa ids cuz there are apparently dupe stations in the data.
               data.type = station.station_type;
               data.position = [station.marker.lat, station.marker.lng];
               data.stationId = station.noaa_id.split('_')[0];
               data.stationName = station.title;
-              return <CurrentsMarker key={index} station={data} />;
+              return <CurrentsMarker key={station.noaa_id} station={data} />;
             })}
           </LayerGroup>
           <LayerGroup>
             {baskTides.map((station, index) => {
               const data = {};
-              // can't use the noaa ids cuz there are apparently dupe stations in the data.
               data.type = station.station_type;
               data.position = [station.marker.lat, station.marker.lng];
               data.stationId = station.noaa_id.split('_')[0];
               data.stationName = station.title;
-              return <TidesMarker key={index} station={data} />;
+              return <TidesMarker key={station.noaa_id} station={data} />;
             })}
           </LayerGroup>
         </LayersControl.Overlay>
