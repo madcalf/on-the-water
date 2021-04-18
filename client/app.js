@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import Sidebar from './components/Sidebar';
-import Routes from './routes';
+import Routes from './Routes';
 
 const App = () => {
   return (

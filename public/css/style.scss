@@ -1,6 +1,6 @@
-:root {
-  --angle: -20deg;
-}
+// :root {
+//   --angle: -20deg;
+// }
 
 * {
   box-sizing: border-box;
@@ -15,6 +15,9 @@
   width: 20vw;
   height: 100vh;
   background-color: lavender;
+  font-size: 1.3rem;
+  padding: 40px;
+  text-align: justify;
 }
 
 #map-viewer {
@@ -35,11 +38,35 @@
 }
 
 // temp to see how we can handle rotation etc
-.map-marker {
-  // width: 50px;
-  transform: rotate(20deg);
-  &:hover {
-    // --angle: 10deg;
-    transform: rotate(-10deg);
-  }
+// .map-icon {
+//   transform: rotate(20deg);
+//   &:hover {
+//     // --angle: 10deg;
+//     transform: rotate(-10deg);
+//   }
+// }
+
+.kp-popup .leaflet-popup-content-wrapper {
+  background-color: white;
+}
+
+p.kp-popup-text {
+  margin-top: 0;
+}
+// .kp-popup
+//   .leaflet-popup-content-wrapper
+//   .leaflet-popup-content
+
+.kp-popup-header {
+  margin-bottom: 3px;
+}
+
+.my-div-icon {
+  // background: url(../leaflet-images/current_arrow.svg);
+  background-size: 30px 50px;
+  transform: rotate(25deg);
+}
+
+svg {
+  transform: rotate(180deg);
 }
