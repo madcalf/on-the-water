@@ -35,7 +35,10 @@ const CurrentsMarker = (props) => {
     // let svg = document.querySelector('.my-div-icon svg #arrow');
     let svg = document.querySelector(`#arrow-${station.stationId}`);
     console.log('svg', svg);
-    svg.style.transform = 'rotate(10deg)';
+    const rot = svg.style.transform;
+    console.log('rot', rot);
+    const r = Math.random() * 360;
+    svg.style.transform = `rotate(${r}deg)`;
   };
 
   // props: {position: [lat,lon], stationId: xx, stationName: xx, url:??}
