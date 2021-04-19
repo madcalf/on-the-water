@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
@@ -18,52 +18,74 @@ import TidesMarker from './TidesMarker';
 import BuoyMarker from './BuoyMarker';
 
 import baskData from '../../public/data/bask_datapoints.json';
-import noaaCurrents from '../../public/data/noaa_stations_currents.json';
-import noaaTides from '../../public/data/noaa_stations_tides.json';
+import noaaCurrentsData from '../../public/data/noaa_stations_currents.json';
+import noaaTidesData from '../../public/data/noaa_stations_tides.json';
 import noaaMet from '../../public/data/noaa_stations_met.json';
 
-Icon.Default.imagePath = 'leaflet-images/';
-const style = document.documentElement.style;
-
-const icon = new Icon({
-  iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
-  iconSize: [25, 25],
-  iconAnchor: [13, 0],
-  className: 'map-icon',
-});
-
-const arrowIcon = new Icon({
-  iconUrl: Icon.Default.imagePath + 'arrow_small.png',
-  iconSize: [50, 60],
-  iconAnchor: [25, 0],
-  className: 'map-icon',
-});
-
-// filter the bask data to something managable
-const baskCurrents = baskData.filter(
-  (station) =>
-    station.noaa_id !== '' &&
-    station.marker &&
-    station.station_type === 'current'
-);
-
-const baskTides = baskData.filter(
-  (station) =>
-    station.noaa_id !== '' && station.marker && station.station_type === 'tide'
-);
-
-console.log('BASK ALL', baskData[0].marker.lat);
-console.log('BASK CURRENTS', baskCurrents.length);
-console.log('BASK TIDES', baskTides.length);
-
+// END IMPORTS //
 export const MapView = (props) => {
-  ///----------
-  // const center = [51.505, -0.09];
+  Icon.Default.imagePath = 'leaflet-images/';
+  const style = document.documentElement.style;
+
+  const icon = new Icon({
+    iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
+    iconSize: [25, 25],
+    iconAnchor: [13, 0],
+    className: 'map-icon',
+  });
+
+  const arrowIcon = new Icon({
+    iconUrl: Icon.Default.imagePath + 'arrow_small.png',
+    iconSize: [50, 60],
+    iconAnchor: [25, 0],
+    className: 'map-icon',
+  });
+
   const center = [37.818809, -122.478161];
-  const rectangle = [
-    [51.49, -0.08],
-    [51.5, -0.06],
-  ];
+  const maxDistMeters = 25000;
+  // console.log('c', c, c.distanceTo([37.824613, -122.477839]));
+
+  // filter the bask data to something managable
+  // const baskCurrents = baskData.filter(
+  //   (station) =>
+  //     station.noaa_id !== '' &&
+  //     station.marker &&
+  //     station.station_type === 'current'
+  // );
+  const baskCurrents = baskData.filter((station) => {
+    const stationPos = L.latLng(station.marker.lat, station.marker.lng);
+    return (
+      station.noaa_id !== '' &&
+      station.marker &&
+      station.station_type === 'current' &&
+      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+    );
+  });
+
+  const baskTides = baskData.filter((station) => {
+    const stationPos = L.latLng(station.marker.lat, station.marker.lng);
+    return (
+      station.noaa_id !== '' &&
+      station.marker &&
+      station.station_type === 'tide' &&
+      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+    );
+  });
+
+  // note need to filter out the dupes by checking the currbin
+  const noaaCurrents = noaaCurrentsData.stations.filter((station) => {
+    const stationPos = L.latLng(station.lat, station.lng);
+    return (
+      station.id !== '' &&
+      station.currbin === 1 &&
+      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+    );
+  });
+
+  console.log('BASK ALL', baskData[0].marker.lat);
+  console.log('BASK CURRENTS', baskCurrents.length);
+  console.log('BASK TIDES', baskTides.length);
+
   return (
     <MapContainer center={center} zoom={14} scrollWheelZoom={true}>
       <LayersControl position="topright">
@@ -120,9 +142,9 @@ export const MapView = (props) => {
             </Marker>
           </LayerGroup>
         </LayersControl.Overlay>
-        <LayersControl.Overlay checked name="Current Stations">
+        <LayersControl.Overlay checked name="Current Stations (BASK)">
           <LayerGroup>
-            {baskCurrents.map((station, index) => {
+            {baskCurrents.map((station) => {
               const data = {};
               data.type = station.station_type;
               data.position = [station.marker.lat, station.marker.lng];
@@ -131,14 +153,34 @@ export const MapView = (props) => {
               return <CurrentsMarker key={station.noaa_id} station={data} />;
             })}
           </LayerGroup>
-          <LayerGroup>
-            {baskTides.map((station, index) => {
+        </LayersControl.Overlay>
+        <LayersControl.Overlay name="Tide Stations (BASK)">
+          <LayerGroup name="Tide Stations">
+            {baskTides.map((station) => {
               const data = {};
               data.type = station.station_type;
               data.position = [station.marker.lat, station.marker.lng];
               data.stationId = station.noaa_id.split('_')[0];
               data.stationName = station.title;
               return <TidesMarker key={station.noaa_id} station={data} />;
+            })}
+          </LayerGroup>
+        </LayersControl.Overlay>
+        <LayersControl.Overlay name="Currents Stations (NOAA)">
+          <LayerGroup>
+            {noaaCurrents.map((station) => {
+              const data = {};
+              data.type = station.station_type;
+              data.position = [station.lat, station.lng];
+              data.stationId = station.id;
+              data.stationName = station.name;
+              return (
+                <Marker
+                  key={station.id}
+                  position={data.position}
+                  title={`${station.id}: ${station.name}`}
+                />
+              );
             })}
           </LayerGroup>
         </LayersControl.Overlay>

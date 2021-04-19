@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Marker, Popup, useMapEvents } from 'react-leaflet';
+import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
 import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 
 const CurrentsMarker = (props) => {
+  // TEMP
+  const map = useMap();
+
   const [rotation, setRotation] = useState(0);
 
   const station = props.station;
@@ -16,6 +19,7 @@ const CurrentsMarker = (props) => {
   const iconSvg = makeSvg(props.station.stationId);
 
   Icon.Default.imagePath = 'leaflet-images/';
+
   // using divIcon so we can embed an SVG. This will allow
   // us to rotate via css or apply other styling as needed.
   const icon = L.divIcon({
@@ -25,21 +29,14 @@ const CurrentsMarker = (props) => {
     html: `${iconSvg}`,
   });
 
-  // const handleClick = (e) => {
-  //   // let svg = document.querySelector('.my-div-icon svg #arrow');
-  //   let svg = document.querySelector(`#arrow-${station.stationId}`);
-  //   const rot = svg.style.transform;
-  //   const r = Math.random() * 360; // temp
-  //   setRotation(rotation + 10);
-  //   svg.style.transform = `rotate(15deg)`;
-  // };
-
   useEffect(() => {
     // update the rotation when that state changes
+    console.log('USE EFFECT', this);
     const svg = document.querySelector(`#arrow-${station.stationId}`);
     if (svg) {
       svg.style.transform = `rotate(${rotation}deg)`;
     }
+    // console.log(station.position);
   });
 
   // props: {position: [lat,lon], stationId: xx, stationName: xx, url:??}
