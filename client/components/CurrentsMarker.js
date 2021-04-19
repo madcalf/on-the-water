@@ -1,50 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Marker, Popup, useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
 import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
-import getSvg from '../helpers/getSvg';
+import makeSvg from '../helpers/makeSvg';
 
 const CurrentsMarker = (props) => {
-  // const map = useMapEvents({
-  //   click(e) {
-  //     console.log('CLICK');
-  //     handleClick(e);
-  //   },
-  // });
+  const [rotation, setRotation] = useState(0);
 
   const station = props.station;
   const name = station.stationName.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
 
-  const thisSvg = getSvg(props.station.stationId);
-  // console.log(thisSvg);
+  const iconSvg = makeSvg(props.station.stationId);
 
   Icon.Default.imagePath = 'leaflet-images/';
+  // using divIcon so we can embed an SVG. This will allow
+  // us to rotate via css or apply other styling as needed.
   const icon = L.divIcon({
     className: 'my-div-icon',
-    // iconUrl: Icon.Default.imagePath + 'current_arrow.svg',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `${thisSvg}`,
+    html: `${iconSvg}`,
   });
 
-  const handleClick = (e) => {
-    console.log('HANDLE CLICK', e);
-    // let svg = document.querySelector('.my-div-icon svg #arrow');
-    let svg = document.querySelector(`#arrow-${station.stationId}`);
-    console.log('svg', svg);
-    const rot = svg.style.transform;
-    console.log('rot', rot);
-    const r = Math.random() * 360;
-    svg.style.transform = `rotate(${r}deg)`;
-  };
+  // const handleClick = (e) => {
+  //   // let svg = document.querySelector('.my-div-icon svg #arrow');
+  //   let svg = document.querySelector(`#arrow-${station.stationId}`);
+  //   const rot = svg.style.transform;
+  //   const r = Math.random() * 360; // temp
+  //   setRotation(rotation + 10);
+  //   svg.style.transform = `rotate(15deg)`;
+  // };
+
+  useEffect(() => {
+    // update the rotation when that state changes
+    const svg = document.querySelector(`#arrow-${station.stationId}`);
+    if (svg) {
+      svg.style.transform = `rotate(${rotation}deg)`;
+    }
+  });
 
   // props: {position: [lat,lon], stationId: xx, stationName: xx, url:??}
   return (
     <Marker
-      eventHandlers={{ click: handleClick }}
+      eventHandlers={{ click: () => setRotation(rotation + 10) }}
       rotationAngle={30}
       position={station.position}
       icon={icon}
