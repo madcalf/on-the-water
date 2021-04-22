@@ -148,9 +148,9 @@ export const MapView = (props) => {
               const data = {};
               data.type = station.station_type;
               data.position = [station.marker.lat, station.marker.lng];
-              data.stationId = station.noaa_id.split('_')[0];
+              data.id = station.noaa_id.split('_')[0];
               data.stationName = station.title;
-              return <CurrentsMarker key={station.noaa_id} station={data} />;
+              return <CurrentsMarker key={data.id} station={data} />;
             })}
           </LayerGroup>
         </LayersControl.Overlay>
@@ -160,9 +160,9 @@ export const MapView = (props) => {
               const data = {};
               data.type = station.station_type;
               data.position = [station.marker.lat, station.marker.lng];
-              data.stationId = station.noaa_id.split('_')[0];
+              data.id = station.noaa_id.split('_')[0];
               data.stationName = station.title;
-              return <TidesMarker key={station.noaa_id} station={data} />;
+              return <TidesMarker key={data.id} station={data} />;
             })}
           </LayerGroup>
         </LayersControl.Overlay>
@@ -172,7 +172,7 @@ export const MapView = (props) => {
               const data = {};
               data.type = station.station_type;
               data.position = [station.lat, station.lng];
-              data.stationId = station.id;
+              data.id = station.id;
               data.stationName = station.name;
               return (
                 <Marker
