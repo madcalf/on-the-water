@@ -9,14 +9,13 @@ import axios from 'axios';
 const CurrentsMarker = (props) => {
   const requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=today&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=30&units=english&format=json`;
 
+  // hooks
   const map = useMap();
-  // let currentData = null;
-  let randomText = 'Some randomness right here';
-
   const [rotation, setRotation] = useState(0);
   const [currentsData, setCurrentsData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // marker icon init
   const station = props.station;
   const name = station.stationName.split(',');
   const title = name.shift();
@@ -26,6 +25,10 @@ const CurrentsMarker = (props) => {
 
   // using divIcon so we can embed an SVG. This will allow
   // us to rotate via css or apply other styling as needed.
+  // Also try: rotating an image instead of the svg
+
+  // Note: the icon size below appears to be ignored or
+  // maybe overridden by the css or the svg directly?
   const icon = L.divIcon({
     className: 'my-div-icon',
     iconSize: [30, 50],
@@ -58,17 +61,31 @@ const CurrentsMarker = (props) => {
 
   const currentsTable = (data) => {
     return (
-      <div>
-        {data.map((prediction, index) => {
-          return (
-            <p key={index}>
-              {prediction.Time} {prediction.Type} {prediction.Velocity_Major}
-            </p>
-          );
-        })}
-      </div>
+      <table>
+        <tbody>
+          <tr>
+            <th scope="col">Time (LST/LDT)</th>
+            <th scope="col">Min/Max</th>
+            <th scope="col">Speed (knots)</th>
+          </tr>
+          {data.map((prediction, index) => {
+            return (
+              <tr key={index}>
+                <td>{prediction.Time}</td>
+                <td>{prediction.Type}</td>
+                <td>{prediction.Velocity_Major}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     );
   };
+
+  // load predictions so we can set the arrow directions
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // update the rotation when that state changes
@@ -97,40 +114,9 @@ const CurrentsMarker = (props) => {
         </h3>
         <p className="kp-popup-text">{subtitle}</p>
         {currentsData ? currentsData : "Can't show the data"}
-        <p>{randomText}</p>
-        {/* <div>{currentData}</div> */}
       </Popup>
     </Marker>
   );
 };
 
 export default CurrentsMarker;
-/* 
- <Marker position={[37.833063, -122.471861]}>
-  <Popup>
-<h2>Station: SFB1203</h2>
-<h2>Golden Gate Bridge</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Date/Time (LST/LDT)</th>
-      <th>Speed (knots)</th>
-      <th>Dir (true)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>2012-05-29 00:00:00</td>
-      <td>1.20</td>
-      <td>217</td>
-    </tr>
-    <tr>
-      <td>2012-05-29 00:06:00</td>
-      <td>1.42</td>
-      <td>221</td>
-    </tr>
-
-  </tbody>
-</table>
-</Popup>
-</Marker> */
