@@ -12,10 +12,11 @@ const CurrentsMarker = (props) => {
   // hooks
   const map = useMap();
   const [rotation, setRotation] = useState(0);
-  const [currentsData, setCurrentsData] = useState(null);
+  const [predictions, setPredictions] = useState(null); // json prediction data
+  const [currentsTable, setCurrentsTable] = useState(null); // this is the formatted table
   const [isLoading, setIsLoading] = useState(false);
 
-  // marker icon init
+  // set values for marker icon
   const station = props.station;
   const name = station.stationName.split(',');
   const title = name.shift();
@@ -23,43 +24,53 @@ const CurrentsMarker = (props) => {
   const iconSvg = makeSvg(props.station.id);
   Icon.Default.imagePath = 'leaflet-images/';
 
-  // using divIcon so we can embed an SVG. This will allow
-  // us to rotate via css or apply other styling as needed.
-  // Also try: rotating an image instead of the svg
-
-  // Note: the icon size below appears to be ignored or
-  // maybe overridden by the css or the svg directly?
+  /* 
+  using divIcon so we can embed an SVG. This will allow
+  us to rotate via css or apply other styling as needed.
+  Note: the icon size below appears to be ignored or
+  maybe overridden by the css or the svg directly?
+   */
   const icon = L.divIcon({
     className: 'my-div-icon',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `${iconSvg}`,
+    html: `<div>${iconSvg} <span class="current-marker-label">${rotation}</span></div>`,
   });
 
   const fetchData = async () => {
     try {
       const { data } = await axios.get(requestUrl);
-      console.log(data);
-      const predictions = data.current_predictions.cp;
-      setCurrentsData(currentsTable(predictions));
-      const rot =
-        predictions[0].Velocity_Major > 0
-          ? predictions[0].meanFloodDir
-          : predictions[0].meanEbbDir;
-      console.log(
-        'rot',
-        predictions[0].Velocity_Major,
-        predictions[0].meanEbbDir,
-        predictions[0].meanFloodDir,
-        rot
-      );
-      setRotation(rot);
+      // const predictions = data.current_predictions.cp;
+      setPredictions(data.current_predictions.cp);
+
+      // if we make this a Material UI data grid, we can use
+      // the json directly without having to convert to
+      // table
+      // setCurrentsTable(makeTable(predictions));
+
+      // Set arrow rotation based on the current's direction at specified time
+      // right now we're just using the rotation of the
+      // first item in the list. Later will base this on the
+      // current time from app state.
+
+      // const rot =
+      //   predictions[0].Velocity_Major > 0
+      //     ? predictions[0].meanFloodDir
+      //     : predictions[0].meanEbbDir;
+      // console.log(
+      //   'rot',
+      //   predictions[0].Velocity_Major,
+      //   predictions[0].meanEbbDir,
+      //   predictions[0].meanFloodDir,
+      //   rot
+      // );
+      // setRotation(rot);
     } catch (err) {
-      console.log('Problem loading or setting currents data');
+      console.log('Problem loading or setting currents data', err);
     }
   };
 
-  const currentsTable = (data) => {
+  const makeTable = (data) => {
     return (
       <table>
         <tbody>
@@ -82,16 +93,31 @@ const CurrentsMarker = (props) => {
     );
   };
 
-  // load predictions so we can set the arrow directions
+  const getNewRotation = () => {
+    // get the correct prediction when we do this for real
+    return predictions[0].Velocity_Major > 0
+      ? predictions[0].meanFloodDir
+      : predictions[0].meanEbbDir;
+  };
+
+  // load predictions on mount so we can set the initial
+  // arrow directions
   useEffect(() => {
     fetchData();
   }, []);
 
+  // update the currents table when new predictions data is loaded
   useEffect(() => {
-    // update the rotation when that state changes
+    if (predictions) {
+      setCurrentsTable(predictions);
+      setRotation(getNewRotation());
+    }
+  }, [predictions]);
+
+  // update the marker rotation when new rotation value is set
+  useEffect(() => {
     const svg = document.querySelector(`#arrow-${station.id}`);
     if (svg) {
-      console.log('useEffect', rotation);
       svg.style.transform = `rotate(${rotation}deg)`;
     }
   });
@@ -101,7 +127,7 @@ const CurrentsMarker = (props) => {
   //  but you can use an async func within the callback
   // useEffect must return a cleanup function or nothing
 
-  // props: {position: [lat,lon], stationId: xx, stationName: xx, url:??}
+  // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (
     <Marker
       eventHandlers={{ click: () => fetchData() }}
@@ -113,7 +139,7 @@ const CurrentsMarker = (props) => {
           {station.id} {title}
         </h3>
         <p className="kp-popup-text">{subtitle}</p>
-        {currentsData ? currentsData : "Can't show the data"}
+        {currentsTable ? currentsTable : "Can't show the data"}
       </Popup>
     </Marker>
   );

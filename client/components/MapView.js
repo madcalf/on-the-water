@@ -21,11 +21,10 @@ import baskData from '../../public/data/bask_datapoints.json';
 import noaaCurrentsData from '../../public/data/noaa_stations_currents.json';
 import noaaTidesData from '../../public/data/noaa_stations_tides.json';
 import noaaMet from '../../public/data/noaa_stations_met.json';
-
 // END IMPORTS //
+
 export const MapView = (props) => {
   Icon.Default.imagePath = 'leaflet-images/';
-  const style = document.documentElement.style;
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
@@ -34,24 +33,17 @@ export const MapView = (props) => {
     className: 'map-icon',
   });
 
-  const arrowIcon = new Icon({
-    iconUrl: Icon.Default.imagePath + 'arrow_small.png',
-    iconSize: [50, 60],
-    iconAnchor: [25, 0],
-    className: 'map-icon',
-  });
+  // const arrowIcon = new Icon({
+  //   iconUrl: Icon.Default.imagePath + 'arrow_small.png',
+  //   iconSize: [50, 60],
+  //   iconAnchor: [25, 0],
+  //   className: 'map-icon',
+  // });
 
   const center = [37.818809, -122.478161];
-  const maxDistMeters = 25000;
-  // console.log('c', c, c.distanceTo([37.824613, -122.477839]));
+  const maxDistMeters = 1000; //805000;
 
   // filter the bask data to something managable
-  // const baskCurrents = baskData.filter(
-  //   (station) =>
-  //     station.noaa_id !== '' &&
-  //     station.marker &&
-  //     station.station_type === 'current'
-  // );
   const baskCurrents = baskData.filter((station) => {
     const stationPos = L.latLng(station.marker.lat, station.marker.lng);
     return (

@@ -20,18 +20,20 @@
   text-align: justify;
 }
 
-#map-viewer {
-  background-color: darkgray;
-  width: 80vw;
-  height: 100vh;
-}
+// #map-viewer {
+//   background-color: darkgray;
+//   width: 80vw;
+//   height: 100vh;
+// }
 
-#map {
-  border: 1px solid black;
-  width: 90%;
-  height: 100vh;
-}
+// #map {
+//   border: 1px solid black;
+//   width: 90%;
+//   height: 100vh;
+// }
 
+/* Note this is critical! Map doesn't appear or appears
+wonky without it. */
 .leaflet-container {
   width: 100%;
   height: 100vh;
@@ -66,6 +68,10 @@ p.kp-popup-text {
   // background-size: 30px 50px;
 }
 
+/* The svg and arrow styles are used to target the currents
+markers which are svg images. The classes are specified in
+the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
+*/
 #arrow {
   transform: rotate(180deg);
   transform: scale(1, 0.5);
@@ -82,4 +88,17 @@ p.kp-popup-text {
   // fill: black;
   stroke: black;
   stroke-width: 2;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 10%;
+  background-color: black;
+  z-index: 2;
+}
+
+.current-marker-label {
+  font-weight: bold;
+  font-size: 1.3em;
 }
