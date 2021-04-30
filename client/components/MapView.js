@@ -33,13 +33,6 @@ export const MapView = (props) => {
     className: 'map-icon',
   });
 
-  // const arrowIcon = new Icon({
-  //   iconUrl: Icon.Default.imagePath + 'arrow_small.png',
-  //   iconSize: [50, 60],
-  //   iconAnchor: [25, 0],
-  //   className: 'map-icon',
-  // });
-
   const center = [37.818809, -122.478161];
   const maxDistMeters = 1000; //805000;
 

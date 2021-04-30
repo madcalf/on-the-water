@@ -103,11 +103,13 @@ const CurrentsMarker = (props) => {
   // load predictions on mount so we can set the initial
   // arrow directions
   useEffect(() => {
+    console.log('useEffect fetch');
     fetchData();
   }, []);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
+    console.log('useEffect predictions');
     if (predictions) {
       setCurrentsTable(predictions);
       setRotation(getNewRotation());
@@ -116,11 +118,12 @@ const CurrentsMarker = (props) => {
 
   // update the marker rotation when new rotation value is set
   useEffect(() => {
+    console.log('useEffect rotation');
     const svg = document.querySelector(`#arrow-${station.id}`);
     if (svg) {
       svg.style.transform = `rotate(${rotation}deg)`;
     }
-  });
+  }, [rotation]);
 
   // IMPORTANT NOTES:
   // Callback for useEffect can't BE async
