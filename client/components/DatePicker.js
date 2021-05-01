@@ -7,9 +7,8 @@ const DatePicker = (props) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   //
   const handleChange = (event, value) => {
-    // props.setDate(value);
     setSelectedDate(value);
-    console.log(value);
+    props.setDate(value);
   };
 
   return (
