@@ -70,6 +70,9 @@ const CurrentsMarker = (props) => {
     }
   };
 
+  // if we make this a Material UI data grid, we can use
+  // the json directly without having to convert to
+  // table
   const makeTable = (data) => {
     return (
       <table>
