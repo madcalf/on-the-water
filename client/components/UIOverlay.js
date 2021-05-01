@@ -24,10 +24,10 @@ const UIOverlay = (props) => {
     setSelectedTime(date.getTime());
   };
 
-  // for time slider
-  const handleUpdate = (event) => {
-    console.log(event);
-  };
+  // // for time slider
+  // const handleUpdate = (event) => {
+  //   console.log(event);
+  // };
 
   useEffect(() => {});
 
@@ -47,7 +47,9 @@ const UIOverlay = (props) => {
               'aria-label': 'change date',
             }}
           />
-          <TimeSlider onChange={handleUpdate} />
+
+          <TimeSlider />
+
           <KeyboardTimePicker
             margin="normal"
             id="time-picker"
