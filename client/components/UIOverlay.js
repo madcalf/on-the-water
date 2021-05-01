@@ -7,22 +7,23 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import TimeSlider from './TimeSlider';
+import DatePicker from './DatePicker';
 
 const UIOverlay = (props) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
 
   // for date picker
-  const handleDateChange = (date) => {
-    console.log('date:', date);
-    setSelectedDate(date);
-  };
+  // const handleDateChange = (date) => {
+  //   console.log('date:', date);
+  //   setSelectedDate(date);
+  // };
 
-  // for time picker
-  const handleTimeChange = (date) => {
-    console.log('date:', date.getTime());
-    setSelectedTime(date.getTime());
-  };
+  // // for time picker
+  // const handleTimeChange = (date) => {
+  //   console.log('date:', date.getTime());
+  //   setSelectedTime(date.getTime());
+  // };
 
   // // for time slider
   // const handleUpdate = (event) => {
@@ -35,22 +36,11 @@ const UIOverlay = (props) => {
     <div className="overlay">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container justify="space-around">
-          <KeyboardDatePicker
-            margin="normal"
-            variant="inline"
-            id="date-picker-dialog"
-            label="Date picker dialog"
-            format="MM/dd/yyyy"
-            value={selectedDate}
-            onChange={handleDateChange}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />
-
+          <DatePicker />
           <TimeSlider />
+          <div>{`${selectedDate}`}</div>
 
-          <KeyboardTimePicker
+          {/* <KeyboardTimePicker
             margin="normal"
             id="time-picker"
             label="Time picker"
@@ -59,8 +49,7 @@ const UIOverlay = (props) => {
             KeyboardButtonProps={{
               'aria-label': 'change time',
             }}
-          />
-          <div>{`${selectedDate}`}</div>
+          /> */}
         </Grid>
       </MuiPickersUtilsProvider>
     </div>

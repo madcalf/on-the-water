@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-import { setTime } from '../store/index';
+import { setTime } from '../store';
+import { subDays, startOfToday, format } from 'date-fns'; // not sure if i need these
+import { scaleTime } from 'd3-scale';
 
 const useStyles = makeStyles({
   root: {
