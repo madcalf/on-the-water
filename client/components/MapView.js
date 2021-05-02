@@ -74,7 +74,7 @@ export const MapView = (props) => {
     }
   });
 
-  console.log('noaa currents length', noaaCurrents.length, memo);
+  // console.log('noaa currents length', noaaCurrents.length, memo);
 
   console.log('BASK ALL', baskData[0].marker.lat);
   console.log('BASK CURRENTS', baskCurrents.length);

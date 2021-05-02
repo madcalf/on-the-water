@@ -21,7 +21,7 @@ const DatePicker = (props) => {
       // showTodayButton={true}// only works on dialog variant
       id="date-picker-dialog"
       label="Date picker dialog"
-      format="MM/dd/yyyy"
+      format="MM/dd/yyyy HH:mm"
       value={selectedDate}
       onChange={handleChange}
       KeyboardButtonProps={{

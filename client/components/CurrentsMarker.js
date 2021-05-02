@@ -39,6 +39,8 @@ const CurrentsMarker = (props) => {
   const title = name.shift();
   const subtitle = name.join(',');
   const iconSvg = makeSvg(props.station.id);
+
+  const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
   Icon.Default.imagePath = 'leaflet-images/';
 
   /* 
@@ -55,13 +57,18 @@ const CurrentsMarker = (props) => {
   });
 
   const fetchData = async (interval) => {
+    console.log('fetching currents data');
     try {
       const dateStr = `begin_date=${props.date}&range=24`;
-      const requestUrl = `https://cors-anywhere.herokuapp.com/https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?${dateStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?${dateStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
       console.log('fetching...', requestUrl);
 
+      // Hack to handle CORS errors when using the 6 interval
+      if (interval === '6') {
+        requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
+      }
+
       const { data } = await axios.get(requestUrl);
-      // const predictions = data.current_predictions.cp;
       setPredictions(data.current_predictions.cp);
     } catch (err) {
       console.log('Problem loading or setting currents data', err);
@@ -104,13 +111,11 @@ const CurrentsMarker = (props) => {
   // load predictions on mount so we can set the initial
   // arrow directions
   useEffect(() => {
-    // console.log('useEffect fetch');
     fetchData('MAX_SLACK');
-  }, []);
+  }, [props.date]);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
-    // console.log('useEffect predictions');
     if (predictions) {
       console.log('setting currents table', props.station.id);
       setCurrentsTable(predictions);
@@ -120,7 +125,6 @@ const CurrentsMarker = (props) => {
 
   // update the marker rotation when new rotation value is set
   useEffect(() => {
-    // console.log('useEffect rotation');
     const svg = document.querySelector(`#arrow-${station.id}`);
     if (svg) {
       svg.style.transform = `rotate(${rotation}deg)`;
@@ -130,7 +134,7 @@ const CurrentsMarker = (props) => {
   // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (
     <Marker
-      eventHandlers={{ click: () => fetchData('6') }}
+      // eventHandlers={{ click: () => fetchData('6') }}
       position={station.position}
       icon={icon}
     >
@@ -149,7 +153,7 @@ const CurrentsMarker = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return { date: state.date };
+  return { date: state.date, time: state.time.ms };
 };
 
 export default connect(mapStateToProps)(CurrentsMarker);
