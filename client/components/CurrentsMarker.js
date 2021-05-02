@@ -9,6 +9,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 
 const CurrentsMarker = (props) => {
+  console.log('Marker', props);
   /* 
   For dates, here's what we need
   formats accepted: 
@@ -19,6 +20,10 @@ const CurrentsMarker = (props) => {
   example if we want to send a date + range of hours
    begin_date=20120415&range=24
    begin_date=2012/04/15 00:00&range=24
+
+   interval options
+   Every 6 minutes: interval=6
+   Slack & Max only: interval=MAX_SLACK
   */
 
   // hooks
@@ -49,11 +54,11 @@ const CurrentsMarker = (props) => {
     html: `<div>${iconSvg} <span class="current-marker-label">${rotation}</span></div>`,
   });
 
-  const fetchData = async () => {
+  const fetchData = async (interval) => {
     try {
       const dateStr = `begin_date=${props.date}&range=24`;
-      const requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?${dateStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=30&units=english&format=json`;
-      console.log(requestUrl);
+      const requestUrl = `https://cors-anywhere.herokuapp.com/https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?${dateStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+      console.log('fetching...', requestUrl);
 
       const { data } = await axios.get(requestUrl);
       // const predictions = data.current_predictions.cp;
@@ -99,14 +104,15 @@ const CurrentsMarker = (props) => {
   // load predictions on mount so we can set the initial
   // arrow directions
   useEffect(() => {
-    console.log('useEffect fetch');
-    fetchData();
+    // console.log('useEffect fetch');
+    fetchData('MAX_SLACK');
   }, []);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
-    console.log('useEffect predictions');
+    // console.log('useEffect predictions');
     if (predictions) {
+      console.log('setting currents table', props.station.id);
       setCurrentsTable(predictions);
       setRotation(getNewRotation());
     }
@@ -114,22 +120,17 @@ const CurrentsMarker = (props) => {
 
   // update the marker rotation when new rotation value is set
   useEffect(() => {
-    console.log('useEffect rotation');
+    // console.log('useEffect rotation');
     const svg = document.querySelector(`#arrow-${station.id}`);
     if (svg) {
       svg.style.transform = `rotate(${rotation}deg)`;
     }
   }, [rotation]);
 
-  // IMPORTANT NOTES:
-  // Callback for useEffect can't BE async
-  //  but you can use an async func within the callback
-  // useEffect must return a cleanup function or nothing
-
   // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (
     <Marker
-      eventHandlers={{ click: () => fetchData() }}
+      eventHandlers={{ click: () => fetchData('6') }}
       position={station.position}
       icon={icon}
     >
@@ -138,7 +139,10 @@ const CurrentsMarker = (props) => {
           {station.id} {title}
         </h3>
         <p className="kp-popup-text">{subtitle}</p>
-        {currentsTable ? currentsTable : "Can't show the data"}
+        <p className="kp-popup-text">
+          {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
+        </p>
+        {currentsTable ? makeTable(currentsTable) : "Can't show the data"}
       </Popup>
     </Marker>
   );

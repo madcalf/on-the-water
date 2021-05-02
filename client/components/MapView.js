@@ -34,7 +34,7 @@ export const MapView = (props) => {
   });
 
   const center = [37.818809, -122.478161];
-  const maxDistMeters = 1000; //805000;
+  const maxDistMeters = 5000; //805000;
 
   // filter the bask data to something managable
   const baskCurrents = baskData.filter((station) => {
@@ -57,15 +57,24 @@ export const MapView = (props) => {
     );
   });
 
-  // note need to filter out the dupes by checking the currbin
+  // note need to filter out the dupes try by only including
+  // the first station encountered. That seems to be the
+  // smallest depth version.
+  const memo = [];
   const noaaCurrents = noaaCurrentsData.stations.filter((station) => {
     const stationPos = L.latLng(station.lat, station.lng);
-    return (
-      station.id !== '' &&
-      station.currbin === 1 &&
-      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
-    );
+    if (memo.includes(station.id)) {
+      return false;
+    } else {
+      memo.push(station.id);
+      return (
+        station.id !== '' &&
+        stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+      );
+    }
   });
+
+  console.log('noaa currents length', noaaCurrents.length, memo);
 
   console.log('BASK ALL', baskData[0].marker.lat);
   console.log('BASK CURRENTS', baskCurrents.length);
@@ -127,7 +136,7 @@ export const MapView = (props) => {
             </Marker>
           </LayerGroup>
         </LayersControl.Overlay>
-        <LayersControl.Overlay checked name="Current Stations (BASK)">
+        <LayersControl.Overlay unchecked name="Current Stations (BASK)">
           <LayerGroup>
             {baskCurrents.map((station) => {
               const data = {};
@@ -135,7 +144,9 @@ export const MapView = (props) => {
               data.position = [station.marker.lat, station.marker.lng];
               data.id = station.noaa_id.split('_')[0];
               data.stationName = station.title;
-              return <CurrentsMarker key={data.id} station={data} />;
+              {
+                /* return <CurrentsMarker key={data.id} station={data} />; */
+              }
             })}
           </LayerGroup>
         </LayersControl.Overlay>
@@ -151,21 +162,15 @@ export const MapView = (props) => {
             })}
           </LayerGroup>
         </LayersControl.Overlay>
-        <LayersControl.Overlay name="Currents Stations (NOAA)">
+        <LayersControl.Overlay checked name="Currents Stations (NOAA)">
           <LayerGroup>
             {noaaCurrents.map((station) => {
               const data = {};
-              data.type = station.station_type;
+              data.type = station.type;
               data.position = [station.lat, station.lng];
               data.id = station.id;
               data.stationName = station.name;
-              return (
-                <Marker
-                  key={station.id}
-                  position={data.position}
-                  title={`${station.id}: ${station.name}`}
-                />
-              );
+              return <CurrentsMarker key={data.id} station={data} />;
             })}
           </LayerGroup>
         </LayersControl.Overlay>
