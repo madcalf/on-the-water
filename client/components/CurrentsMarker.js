@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
 import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 const CurrentsMarker = (props) => {
-  const requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=today&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=30&units=english&format=json`;
+  /* 
+  For dates, here's what we need
+  formats accepted: 
+    yyyyMMdd, 
+    yyyyMMdd HH:mm, 
+    MM/dd/yyyy, 
+    MM/dd/yyyy HH:mm
+  example if we want to send a date + range of hours
+   begin_date=20120415&range=24
+   begin_date=2012/04/15 00:00&range=24
+  */
 
   // hooks
   const map = useMap();
@@ -39,32 +51,13 @@ const CurrentsMarker = (props) => {
 
   const fetchData = async () => {
     try {
+      const dateStr = `begin_date=${props.date}&range=24`;
+      const requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?${dateStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=30&units=english&format=json`;
+      console.log(requestUrl);
+
       const { data } = await axios.get(requestUrl);
       // const predictions = data.current_predictions.cp;
       setPredictions(data.current_predictions.cp);
-
-      // if we make this a Material UI data grid, we can use
-      // the json directly without having to convert to
-      // table
-      // setCurrentsTable(makeTable(predictions));
-
-      // Set arrow rotation based on the current's direction at specified time
-      // right now we're just using the rotation of the
-      // first item in the list. Later will base this on the
-      // current time from app state.
-
-      // const rot =
-      //   predictions[0].Velocity_Major > 0
-      //     ? predictions[0].meanFloodDir
-      //     : predictions[0].meanEbbDir;
-      // console.log(
-      //   'rot',
-      //   predictions[0].Velocity_Major,
-      //   predictions[0].meanEbbDir,
-      //   predictions[0].meanFloodDir,
-      //   rot
-      // );
-      // setRotation(rot);
     } catch (err) {
       console.log('Problem loading or setting currents data', err);
     }
@@ -151,4 +144,8 @@ const CurrentsMarker = (props) => {
   );
 };
 
-export default CurrentsMarker;
+const mapStateToProps = (state) => {
+  return { date: state.date };
+};
+
+export default connect(mapStateToProps)(CurrentsMarker);

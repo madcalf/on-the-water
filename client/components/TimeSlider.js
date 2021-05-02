@@ -23,7 +23,6 @@ export function TimeSlider(props) {
   const classes = useStyles();
 
   function handleChange(event, value) {
-    // console.log(value);
     props.setTime(value);
   }
 

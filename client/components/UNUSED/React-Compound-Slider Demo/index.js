@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { Slider, Rail, Handles, Tracks, Ticks } from 'react-compound-slider';
-import { SliderRail, Handle, Track, Tick } from './SliderComponents'; // example render components - source below
+import { SliderRail, Handle, Track, Tick } from './components'; // example render components - source below
 import { subDays, startOfToday, format } from 'date-fns';
 import { scaleTime } from 'd3-scale';
 
