@@ -8,6 +8,7 @@ import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
 import { format, addMinutes, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
+import { setMarker } from '../store';
 
 const CurrentsMarker = (props) => {
   // console.log('Marker', props);
@@ -16,9 +17,11 @@ const CurrentsMarker = (props) => {
   const map = useMap();
 
   // rotation of marker icon
+  const [isLoading, setIsLoading] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [scale, setScale] = useState(0);
+  const [selected, setselected] = useState(false);
 
   // json prediction data on MAX/SLACK interval.
   // For popup display
@@ -30,8 +33,6 @@ const CurrentsMarker = (props) => {
 
   // formatted table of predictions data
   const [currentsTable, setCurrentsTable] = useState(null);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   // set values for marker icon
   const station = props.station;
@@ -57,7 +58,9 @@ const CurrentsMarker = (props) => {
     className: 'my-div-icon',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg)" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
+    html: `<div class=${
+      selected ? 'selected-marker' : ''
+    } marker-container"><div style="transform: rotate(${rotation}deg)" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictionsShort = async () => {
@@ -125,6 +128,9 @@ const CurrentsMarker = (props) => {
     );
   };
 
+  const handleClick = () => {
+    props.selectMarker(station.id);
+  };
   // get the direction for rotation based on Velocity_Major
   // value in prediction
   const getRotationDir = (prediction) => {
@@ -200,28 +206,14 @@ const CurrentsMarker = (props) => {
     }
   }, [predictions]);
 
-  // update the marker rotation when new rotation value is set
   useEffect(() => {
-    const svg = document.querySelector(`#arrow-${station.id}`);
-    // if (svg) {
-    //   svg.style.transform = `rotate(${rotation}deg)`;
-    // }
-
-    // if (station.id === 'SFB1201') {
-    //   if (svg) {
-    //     console.log(
-    //       `${station.id} setting rotation to ${rotation}? svg: ${svg} ${svg.style.transform}`
-    //     );
-    //   } else {
-    //     console.log(`${station.id} no svg to target yet`);
-    //   }
-    // }
-  }, [rotation]);
+    setselected(props.marker === station.id);
+  }, [props.marker]);
 
   // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (
     <Marker
-      // eventHandlers={{ click: () => fetchData('6') }}
+      eventHandlers={{ click: () => handleClick() }}
       className="marker-class"
       position={station.position}
       icon={icon}
@@ -240,8 +232,18 @@ const CurrentsMarker = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return { date: state.date, time: state.time.ms };
+const mapState = (state) => {
+  return {
+    date: state.date,
+    time: state.time.ms,
+    marker: state.marker,
+  };
 };
 
-export default connect(mapStateToProps)(CurrentsMarker);
+const mapDispatch = (dispatch) => {
+  return {
+    selectMarker: (stationId) => dispatch(setMarker(stationId)),
+  };
+};
+
+export default connect(mapState, mapDispatch)(CurrentsMarker);

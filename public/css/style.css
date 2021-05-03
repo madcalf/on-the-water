@@ -75,6 +75,7 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
 }
 
 table {
+  font-size: 1.1rem;
   border-collapse: collapse;
 }
 
@@ -104,5 +105,9 @@ tr:nth-child(even) {
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
+}
+
+.selected-marker #arrow-border {
+  stroke-width: 7px;
 }
 /*# sourceMappingURL=style.css.map */

@@ -44,14 +44,14 @@ const timeReducer = (state = { ms: 0, formatted: null }, action) => {
 // MARKER
 const SET_MARKER = 'SET_MARKER';
 
-export const setMarker = (marker) => {
-  return { type: SET_MARKER, marker };
+export const setMarker = (markerId) => {
+  return { type: SET_MARKER, markerId };
 };
 // MARKER reducer
-const markerReducer = (state = { selectedMarker: null }, action) => {
+const markerReducer = (state = null, action) => {
   switch (action.type) {
     case SET_MARKER:
-      return action.marker;
+      return action.markerId;
     default:
       return state;
   }
