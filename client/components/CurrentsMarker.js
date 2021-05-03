@@ -9,28 +9,25 @@ import axios from 'axios';
 import { format } from 'date-fns';
 
 const CurrentsMarker = (props) => {
-  console.log('Marker', props);
-  /* 
-  For dates, here's what we need
-  formats accepted: 
-    yyyyMMdd, 
-    yyyyMMdd HH:mm, 
-    MM/dd/yyyy, 
-    MM/dd/yyyy HH:mm
-  example if we want to send a date + range of hours
-   begin_date=20120415&range=24
-   begin_date=2012/04/15 00:00&range=24
-
-   interval options
-   Every 6 minutes: interval=6
-   Slack & Max only: interval=MAX_SLACK
-  */
+  // console.log('Marker', props);
 
   // hooks
   const map = useMap();
+
+  // rotation of marker icon
   const [rotation, setRotation] = useState(0);
-  const [predictions, setPredictions] = useState(null); // json prediction data
-  const [currentsTable, setCurrentsTable] = useState(null); // this is the formatted table
+
+  // json prediction data on MAX/SLACK interval.
+  // For popup display
+  const [predictions, setPredictions] = useState(null);
+
+  // predictions on 6 minute interval (Harmonic stations
+  // only). For rotations
+  const [predictionsLong, setPredictionsLong] = useState(null);
+
+  // formatted table of predictions data
+  const [currentsTable, setCurrentsTable] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
 
   // set values for marker icon
@@ -40,8 +37,11 @@ const CurrentsMarker = (props) => {
   const subtitle = name.join(',');
   const iconSvg = makeSvg(props.station.id);
 
-  const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
   Icon.Default.imagePath = 'leaflet-images/';
+
+  // dev hack that allows retrieving the 6 min intervals
+  // that are blocked by CORS restriction
+  const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
 
   /* 
   using divIcon so we can embed an SVG. This will allow
@@ -57,17 +57,18 @@ const CurrentsMarker = (props) => {
   });
 
   const fetchData = async (interval) => {
-    console.log('fetching currents data');
     try {
-      const dateStr = `begin_date=${props.date}&range=24`;
-      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?${dateStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
-      console.log('fetching...', requestUrl);
+      const dateStr = `${props.date}`;
+      const rangeStr = `24`;
+      // load the display data
+      // let interval = "MAX_SLACK"
+      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
-      // Hack to handle CORS errors when using the 6 interval
+      // dev hack around the CORS issue with the 6 minute interval request
       if (interval === '6') {
         requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
       }
-
+      console.log('fetching... interval:', interval);
       const { data } = await axios.get(requestUrl);
       setPredictions(data.current_predictions.cp);
     } catch (err) {
@@ -108,10 +109,14 @@ const CurrentsMarker = (props) => {
       : predictions[0].meanEbbDir;
   };
 
-  // load predictions on mount so we can set the initial
-  // arrow directions
   useEffect(() => {
+    // all markers get the MAX_SLACK data for popup view
     fetchData('MAX_SLACK');
+    // if it's a harmonic station, also get the detailed
+    // interval data for rotation
+    if (props.station.type === 'H') {
+      fetchData('6');
+    }
   }, [props.date]);
 
   // update the currents table when new predictions data is loaded
@@ -120,6 +125,7 @@ const CurrentsMarker = (props) => {
       console.log('setting currents table', props.station.id);
       setCurrentsTable(predictions);
       setRotation(getNewRotation());
+      console.log(predictions[0]);
     }
   }, [predictions]);
 
