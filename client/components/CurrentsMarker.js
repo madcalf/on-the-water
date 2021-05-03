@@ -7,6 +7,7 @@ import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
 import { format, addMinutes, closestIndexTo } from 'date-fns';
+import { scaleLinear } from 'd3-scale';
 
 const CurrentsMarker = (props) => {
   // console.log('Marker', props);
@@ -50,12 +51,13 @@ const CurrentsMarker = (props) => {
   us to rotate via css or apply other styling as needed.
   Note: the icon size below appears to be ignored or
   maybe overridden by the css or the svg directly?
+  For some reason applying scale, limits rotation to one direction
    */
   const icon = L.divIcon({
     className: 'my-div-icon',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg)" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
+    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg) scaleY(scale)" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictionsShort = async () => {
@@ -141,6 +143,8 @@ const CurrentsMarker = (props) => {
     return prediction.Velocity_Major;
   };
 
+  const getScale = scaleLinear().domain([0, 3]).range([0, 1.0]);
+
   useEffect(() => {
     try {
       // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
@@ -165,6 +169,8 @@ const CurrentsMarker = (props) => {
         if (direction !== -1) {
           setRotation(direction);
           setSpeed(getSpeed(prediction));
+          setScale(getScale(prediction.Velocity_Major));
+          // console.log('scale', scale);
         }
       }
     } catch (err) {
