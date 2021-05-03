@@ -63,9 +63,13 @@ const reducer = combineReducers({
   time: timeReducer,
   marker: markerReducer,
 });
-const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
-);
+
+// disable the logging for now
+const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
+
+// const middleware = composeWithDevTools(
+//   applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
+// );
 const store = createStore(reducer, middleware);
 
 export default store;

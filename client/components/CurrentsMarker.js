@@ -6,7 +6,7 @@ import { Icon } from 'leaflet';
 import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
-import { format } from 'date-fns';
+import { format, addMinutes, closestIndexTo } from 'date-fns';
 
 const CurrentsMarker = (props) => {
   // console.log('Marker', props);
@@ -88,7 +88,6 @@ const CurrentsMarker = (props) => {
       if (interval === '6') {
         requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
       }
-      console.log('fetching... interval:', interval);
       const { data } = await axios.get(requestUrl);
       setPredictionsLong(data.current_predictions.cp);
     } catch (err) {
@@ -122,19 +121,60 @@ const CurrentsMarker = (props) => {
     );
   };
 
-  const getNewRotation = () => {
-    // get the correct prediction when we do this for real
-    return predictions[0].Velocity_Major > 0
-      ? predictions[0].meanFloodDir
-      : predictions[0].meanEbbDir;
+  // get the direction for rotation based on Velocity_Major
+  // value in prediction
+  const getRotationDir = (prediction) => {
+    if (prediction.Velocity_Major > 0.5) {
+      return prediction.meanFloodDir;
+    } else if (prediction.Velocity_Major < -0.5) {
+      return prediction.meanEbbDir;
+    } else {
+      // It's slack. Not sure what rotation we should return here...
+      // return error code and deal with it at the call site
+      return -1;
+    }
   };
 
+  useEffect(() => {
+    try {
+      // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
+      let thesePredictions = predictionsLong ? predictionsLong : predictions;
+      if (thesePredictions) {
+        // map each prediction's time to array of date objects.
+        let predictionTimes = thesePredictions.map(
+          (station) => new Date(station.Time)
+        );
+
+        // find closest time in predictions to the selected time
+        // note time from slider is a number 0-1440,
+        // representing minutes in a 24 span
+        const currentDateTime = addMinutes(new Date(props.date), props.time);
+        const index = closestIndexTo(currentDateTime, predictionTimes);
+
+        // get prediction data at that index
+        const prediction = thesePredictions[index];
+
+        // update marker direction based on this prediction
+        const direction = getRotationDir(prediction);
+        if (direction !== -1) {
+          setRotation(direction);
+        }
+      }
+    } catch (err) {
+      console.error(
+        `ERROR ${station.id} ${station.type} has no data or Velocity_Major??`,
+        err
+      );
+    }
+  }, [props.time, predictions]);
+
+  // Update all markers prediction data whenever the date is changed
   useEffect(() => {
     // all markers get the MAX_SLACK data for popup view
     fetchPredictionsShort();
 
     // if it's a harmonic station, also get the detailed
-    // interval data for rotation
+    // interval data for marker rotation
     if (props.station.type === 'H') {
       fetchPredictionsLong();
     }
@@ -143,10 +183,7 @@ const CurrentsMarker = (props) => {
   // update the currents table when new predictions data is loaded
   useEffect(() => {
     if (predictions) {
-      console.log('setting currents table', props.station.id);
       setCurrentsTable(predictions);
-      setRotation(getNewRotation());
-      console.log(predictions[0]);
     }
   }, [predictions]);
 
@@ -155,6 +192,15 @@ const CurrentsMarker = (props) => {
     const svg = document.querySelector(`#arrow-${station.id}`);
     if (svg) {
       svg.style.transform = `rotate(${rotation}deg)`;
+    }
+    if (station.id === 'SFB1201') {
+      if (svg) {
+        console.log(
+          `${station.id} setting rotation to ${rotation}? svg: ${svg} ${svg.style.transform}`
+        );
+      } else {
+        console.log(`${station.id} no svg to target yet`);
+      }
     }
   }, [rotation]);
 

@@ -41,7 +41,7 @@ export function TimeSlider(props) {
         defaultValue={0}
         getAriaValueText={valuetext}
         aria-labelledby="discrete-slider-small-steps"
-        step={5}
+        step={10}
         marks
         min={0}
         max={1440}
