@@ -17,6 +17,7 @@ const CurrentsMarker = (props) => {
   // rotation of marker icon
   const [rotation, setRotation] = useState(0);
   const [speed, setSpeed] = useState(0);
+  const [scale, setScale] = useState(0);
 
   // json prediction data on MAX/SLACK interval.
   // For popup display

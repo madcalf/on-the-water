@@ -23,13 +23,13 @@ export function TimeSlider(props) {
   const classes = useStyles();
   let [dateTime, setDateTime] = useState();
 
-  function handleChange(event, value) {
-    let dateTime = new Date(props.date);
-    dateTime = addMinutes(new Date(props.date), value);
-    setDateTime(format(dateTime, 'MM/dd/yyyy HH:mm'));
-    // console.log('dateTime', props.date);
-    props.setTime(value);
-    // console.log('time', props.time);
+  function handleChange(event, minutes) {
+    let dt = new Date(props.date);
+    dt = addMinutes(new Date(props.date), minutes);
+    setDateTime(format(dt, 'MMMM dd yyyy h:mm aaa'));
+
+    // send minutes to app state
+    props.setTime(minutes);
   }
 
   return (
@@ -44,8 +44,8 @@ export function TimeSlider(props) {
         step={10}
         marks
         min={0}
-        max={1440}
-        valueLabelDisplay="auto"
+        max={1430}
+        valueLabelDisplay="off"
         onChange={handleChange}
       />
     </div>
