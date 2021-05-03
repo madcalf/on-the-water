@@ -56,12 +56,12 @@ const CurrentsMarker = (props) => {
     html: `<div>${iconSvg} <span class="current-marker-label">${rotation}</span></div>`,
   });
 
-  const fetchData = async (interval) => {
+  const fetchPredictionsShort = async () => {
     try {
       const dateStr = `${props.date}`;
       const rangeStr = `24`;
       // load the display data
-      // let interval = "MAX_SLACK"
+      let interval = 'MAX_SLACK';
       let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
       // dev hack around the CORS issue with the 6 minute interval request
@@ -71,6 +71,26 @@ const CurrentsMarker = (props) => {
       console.log('fetching... interval:', interval);
       const { data } = await axios.get(requestUrl);
       setPredictions(data.current_predictions.cp);
+    } catch (err) {
+      console.log('Problem loading or setting currents data', err);
+    }
+  };
+
+  const fetchPredictionsLong = async (interval) => {
+    try {
+      const dateStr = `${props.date}`;
+      const rangeStr = `24`;
+
+      let interval = '6';
+      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+
+      // dev hack around the CORS issue with the 6 minute interval request
+      if (interval === '6') {
+        requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
+      }
+      console.log('fetching... interval:', interval);
+      const { data } = await axios.get(requestUrl);
+      setPredictionsLong(data.current_predictions.cp);
     } catch (err) {
       console.log('Problem loading or setting currents data', err);
     }
@@ -111,11 +131,12 @@ const CurrentsMarker = (props) => {
 
   useEffect(() => {
     // all markers get the MAX_SLACK data for popup view
-    fetchData('MAX_SLACK');
+    fetchPredictionsShort();
+
     // if it's a harmonic station, also get the detailed
     // interval data for rotation
     if (props.station.type === 'H') {
-      fetchData('6');
+      fetchPredictionsLong();
     }
   }, [props.date]);
 
