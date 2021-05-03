@@ -33,8 +33,10 @@ export const MapView = (props) => {
     className: 'map-icon',
   });
 
-  const center = [37.818809, -122.478161];
-  const maxDistMeters = 5000; //805000;
+  // const center = [37.818809, -122.478161]; // SF
+  const center = [40.69993, -73.997876]; // NYC
+
+  const maxDistMeters = 10000; //805000;
 
   // filter the bask data to something managable
   const baskCurrents = baskData.filter((station) => {

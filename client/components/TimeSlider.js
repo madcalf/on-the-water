@@ -35,7 +35,7 @@ export function TimeSlider(props) {
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider-small-steps" gutterBottom>
-        {dateTime}
+        <span className="time-slider-header">{dateTime}</span>
       </Typography>
       <Slider
         defaultValue={0}

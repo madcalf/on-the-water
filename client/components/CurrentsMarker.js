@@ -16,6 +16,7 @@ const CurrentsMarker = (props) => {
 
   // rotation of marker icon
   const [rotation, setRotation] = useState(0);
+  const [speed, setSpeed] = useState(0);
 
   // json prediction data on MAX/SLACK interval.
   // For popup display
@@ -53,7 +54,7 @@ const CurrentsMarker = (props) => {
     className: 'my-div-icon',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg)" >${iconSvg}</div><span class="current-marker-label stroke-text">${rotation}</span></div>`,
+    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg)" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictionsShort = async () => {
@@ -135,6 +136,10 @@ const CurrentsMarker = (props) => {
     }
   };
 
+  const getSpeed = (prediction) => {
+    return prediction.Velocity_Major;
+  };
+
   useEffect(() => {
     try {
       // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
@@ -158,6 +163,7 @@ const CurrentsMarker = (props) => {
         const direction = getRotationDir(prediction);
         if (direction !== -1) {
           setRotation(direction);
+          setSpeed(getSpeed(prediction));
         }
       }
     } catch (err) {

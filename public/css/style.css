@@ -90,13 +90,19 @@ tr:nth-child(even) {
 
 .current-marker-label {
   font-weight: bold;
-  font-size: 1.4em;
+  font-size: 1.4rem;
 }
 
 .stroke-text {
   --stroke-color: black;
-  --stroke-width: 1px;
+  --stroke-width: 2px;
   color: white;
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color), calc(var(--stroke-width) * -1) 0 0 var(--stroke-color), 0 var(--stroke-width) 0 var(--stroke-color), 0 calc(var(--stroke-width) * -1) 0 var(--stroke-color);
+}
+
+.time-slider-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
 }
 /*# sourceMappingURL=style.css.map */
