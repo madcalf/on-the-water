@@ -64,11 +64,6 @@ p.kp-popup-text {
   margin-bottom: 3px;
 }
 
-.my-div-icon {
-  // background: url(../leaflet-images/current_arrow.svg);
-  // background-size: 30px 50px;
-}
-
 /* The svg and arrow styles are used to target the currents
 markers which are svg images. The classes are specified in
 the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
@@ -81,8 +76,6 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
 
 #arrow-fill {
   fill: orange;
-  stroke: none;
-  stroke-width: 5;
 }
 
 #arrow-border {
@@ -98,11 +91,6 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
   height: 10%;
   background-color: lavender;
   z-index: 500;
-}
-
-.current-marker-label {
-  font-weight: bold;
-  font-size: 1.3em;
 }
 
 #slider-container {
@@ -124,3 +112,23 @@ tr:nth-child(even) {
   background-color: #efefef;
   // background-color: lightgray;
 }
+
+.current-marker-label {
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+.stroke-text {
+  --stroke-color: black;
+  --stroke-width: 1px;
+  color: white;
+  text-shadow: var(--stroke-width) 0 0 var(--stroke-color),
+    calc(var(--stroke-width) * -1) 0 0 var(--stroke-color),
+    0 var(--stroke-width) 0 var(--stroke-color),
+    0 calc(var(--stroke-width) * -1) 0 var(--stroke-color);
+}
+
+// test!
+// .marker-container {
+//   transform: rotate(220deg);
+// }

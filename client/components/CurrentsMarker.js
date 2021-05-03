@@ -53,7 +53,7 @@ const CurrentsMarker = (props) => {
     className: 'my-div-icon',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `<div>${iconSvg} <span class="current-marker-label">${rotation}</span></div>`,
+    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg)" >${iconSvg}</div><span class="current-marker-label stroke-text">${rotation}</span></div>`,
   });
 
   const fetchPredictionsShort = async () => {
@@ -190,24 +190,26 @@ const CurrentsMarker = (props) => {
   // update the marker rotation when new rotation value is set
   useEffect(() => {
     const svg = document.querySelector(`#arrow-${station.id}`);
-    if (svg) {
-      svg.style.transform = `rotate(${rotation}deg)`;
-    }
-    if (station.id === 'SFB1201') {
-      if (svg) {
-        console.log(
-          `${station.id} setting rotation to ${rotation}? svg: ${svg} ${svg.style.transform}`
-        );
-      } else {
-        console.log(`${station.id} no svg to target yet`);
-      }
-    }
+    // if (svg) {
+    //   svg.style.transform = `rotate(${rotation}deg)`;
+    // }
+
+    // if (station.id === 'SFB1201') {
+    //   if (svg) {
+    //     console.log(
+    //       `${station.id} setting rotation to ${rotation}? svg: ${svg} ${svg.style.transform}`
+    //     );
+    //   } else {
+    //     console.log(`${station.id} no svg to target yet`);
+    //   }
+    // }
   }, [rotation]);
 
   // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (
     <Marker
       // eventHandlers={{ click: () => fetchData('6') }}
+      className="marker-class"
       position={station.position}
       icon={icon}
     >
