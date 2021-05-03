@@ -57,7 +57,7 @@ const CurrentsMarker = (props) => {
     className: 'my-div-icon',
     iconSize: [30, 50],
     iconAnchor: [25, 0],
-    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg) scaleY(scale)" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
+    html: `<div class="marker-container"><div style="transform: rotate(${rotation}deg)" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictionsShort = async () => {
