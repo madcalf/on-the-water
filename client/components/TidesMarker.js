@@ -1,61 +1,193 @@
-import React from 'react';
-import { Marker, Popup } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import * as L from 'leaflet';
 import { Icon } from 'leaflet';
+import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
+import makeSvg from '../helpers/makeSvg';
+import axios from 'axios';
+import { format, addMinutes, closestIndexTo } from 'date-fns';
+import { scaleLinear } from 'd3-scale';
+import { setMarker } from '../store';
 
 const TidesMarker = (props) => {
-  const icon = new Icon({
-    iconUrl: Icon.Default.imagePath + 'tide_low.png',
-    iconSize: [50, 60],
-    iconAnchor: [25, 0],
-    className: 'map-icon',
-  });
+  // hooks
+  const map = useMap();
 
+  // rotation of marker icon
+  const [isLoading, setIsLoading] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const [speed, setSpeed] = useState(0);
+  const [scale, setScale] = useState(0);
+  const [selected, setselected] = useState(false);
+  const [height, setHeight] = useState(0);
+
+  // json prediction data on HI/LOW interval.
+  // For popup display
+  const [predictions, setPredictions] = useState(null);
+
+  // // predictions on 6 minute interval (Harmonic stations
+  // // only). For rotations
+  // const [predictionsLong, setPredictionsLong] = useState(null);
+
+  // formatted table of predictions data
+  const [tideTable, setTidesTable] = useState(null);
+
+  // set values for marker icon
   const station = props.station;
-  const isCurrent = station.type === 'current';
-
   const name = station.stationName.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
-  // props: {position: [lat,lon], stationId: xx, stationName: xx, url:??}
+  // const iconSvg = makeSvg(props.station.id);
+
+  Icon.Default.imagePath = 'leaflet-images/';
+  const iconUrl = Icon.Default.imagePath + 'tide_low.png';
+
+  // dev hack that allows retrieving the 6 min intervals
+  // that are blocked by CORS restriction
+  const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
+
+  // const icon = new Icon({
+  //   iconUrl: Icon.Default.imagePath + 'tide_low.png',
+  //   iconSize: [50, 60],
+  //   iconAnchor: [25, 0],
+  //   className: 'map-icon',
+  // });
+
+  const icon = L.divIcon({
+    iconSize: [30, 30],
+    iconAnchor: [25, 0],
+    className: 'my-div-icon',
+    html: `<div class=${
+      selected ? 'selected-marker' : ''
+    } "tide-marker-container"><img src='${iconUrl}' alt='tide-marker' /><span class="tide-marker-label stroke-text">${height}</span></div>`,
+  });
+
+  const fetchPredictions = async () => {
+    try {
+      const dateStr = `${props.date}`;
+      const rangeStr = `24`;
+      const interval = `hilo`;
+
+      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+
+      const { data } = await axios.get(requestUrl);
+      setPredictions(data.predictions);
+    } catch (err) {
+      console.log('Problem loading or setting tide data', err);
+    }
+  };
+
+  // if we make this a Material UI data grid, we can use
+  // the json directly without having to convert to
+  // table
+  const makeTable = (data) => {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            <th scope="col">Time (LST/LDT)</th>
+            <th scope="col">Hi/Low</th>
+            <th scope="col">Feet(MLLW) </th>
+          </tr>
+          {data.map((prediction, index) => {
+            return (
+              <tr key={index}>
+                <td>{prediction.t}</td>
+                <td>{prediction.type}</td>
+                <td>{prediction.v}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  };
+
+  const handleClick = () => {
+    props.selectMarker(station.id);
+  };
+
+  useEffect(() => {
+    try {
+      // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
+      // let predictions = predictionsLong ? predictionsLong : predictions;
+      if (predictions && predictions.length > 0) {
+        // map each prediction's time to array of date objects.
+        let predictionTimes = predictions.map((station) => new Date(station.t));
+
+        // find closest time in predictions to the selected time
+        // note time from slider is a number 0-1440,
+        // representing minutes in a 24 span
+        const currentDateTime = addMinutes(new Date(props.date), props.time);
+        const index = closestIndexTo(currentDateTime, predictionTimes);
+
+        // get prediction data at that index
+        const prediction = predictions[index];
+        if (prediction) {
+          // update marker direction based on this prediction
+          const height = prediction.v;
+          setHeight(height);
+        }
+      }
+    } catch (err) {
+      console.error(
+        `ERROR ${station.id} ${station.type} has no data or "v"??`,
+        err
+      );
+    }
+  }, [props.time, predictions]);
+
+  // Update all markers prediction data whenever the date is changed
+  useEffect(() => {
+    // all markers get the MAX_SLACK data for popup view
+    fetchPredictions();
+  }, [props.date]);
+
+  // update the currents table when new predictions data is loaded
+  useEffect(() => {
+    if (predictions) {
+      setTidesTable(predictions);
+    }
+  }, [predictions]);
+
+  useEffect(() => {
+    setselected(props.marker === station.id);
+  }, [props.marker]);
+
   return (
-    <Marker position={station.position} icon={icon}>
-      <Popup className="kp-popup">
+    <Marker
+      eventHandlers={{ click: () => handleClick() }}
+      className="marker-class"
+      position={station.position}
+      icon={icon}
+    >
+      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
         <h3 className="kp-popup-header">
-          Station {station.stationId}: {title}
+          {station.id} {title}
         </h3>
         <p className="kp-popup-text">{subtitle}</p>
+        <p className="kp-popup-text">
+          TIDE {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
+        </p>
+        {tideTable ? makeTable(tideTable) : "Can't show the data"}
       </Popup>
     </Marker>
   );
 };
 
-export default TidesMarker;
-/* 
- <Marker position={[37.833063, -122.471861]}>
-  <Popup>
-<h2>Station: SFB1203</h2>
-<h2>Golden Gate Bridge</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Date/Time (LST/LDT)</th>
-      <th>Speed (knots)</th>
-      <th>Dir (true)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>2012-05-29 00:00:00</td>
-      <td>1.20</td>
-      <td>217</td>
-    </tr>
-    <tr>
-      <td>2012-05-29 00:06:00</td>
-      <td>1.42</td>
-      <td>221</td>
-    </tr>
+const mapState = (state) => {
+  return {
+    date: state.date,
+    time: state.time.ms,
+    marker: state.marker,
+  };
+};
 
-  </tbody>
-</table>
-</Popup>
-</Marker> */
+const mapDispatch = (dispatch) => {
+  return {
+    selectMarker: (stationId) => dispatch(setMarker(stationId)),
+  };
+};
+
+export default connect(mapState, mapDispatch)(TidesMarker);

@@ -39,14 +39,11 @@ wonky without it. */
   height: 100vh;
 }
 
-// temp to see how we can handle rotation etc
-// .map-icon {
-//   transform: rotate(20deg);
-//   &:hover {
-//     // --angle: 10deg;
-//     transform: rotate(-10deg);
-//   }
-// }
+.map-icon {
+  // border: 1px solid black;
+  width: 30px;
+  height: 30px;
+}
 
 .kp-popup .leaflet-popup-content-wrapper {
   background-color: white;
@@ -55,6 +52,7 @@ wonky without it. */
 p.kp-popup-text {
   margin-top: 0;
   margin-bottom: 0;
+  font-size: 1.2rem;
 }
 // .kp-popup
 //   .leaflet-popup-content-wrapper
@@ -62,20 +60,21 @@ p.kp-popup-text {
 
 .kp-popup-header {
   margin-bottom: 3px;
+  font-size: 1.2rem;
 }
 
 /* The svg and arrow styles are used to target the currents
 markers which are svg images. The classes are specified in
 the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
 */
-#arrow {
-  transform: rotate(180deg);
-  transform: scale(1, 0.5);
-  fill: none;
-}
+// #arrow {
+//   transform: rotate(180deg);
+//   transform: scale(1, 0.5);
+//   fill: none;
+// }
 
 #arrow-fill {
-  fill: orange;
+  fill: rgb(255, 196, 0);
 }
 
 #arrow-border {
@@ -107,6 +106,7 @@ td,
 th {
   border: 1px solid gray;
   padding: 0.3rem;
+  font-size: 1.1rem;
 }
 
 tr:nth-child(even) {
@@ -122,7 +122,7 @@ tr:nth-child(even) {
 .stroke-text {
   --stroke-color: black;
   --stroke-width: 2px;
-  color: white;
+  color: rgb(255, 196, 0);
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color),
     calc(var(--stroke-width) * -1) 0 0 var(--stroke-color),
     0 var(--stroke-width) 0 var(--stroke-color),
@@ -140,6 +140,28 @@ tr:nth-child(even) {
 }
 
 // test!
-// .marker-container {
-//   transform: rotate(220deg);
-// }
+.marker-container {
+  border: 2px solid black;
+  background-color: white;
+}
+
+.tide-marker-container img {
+  background-color: rgba(92, 249, 249, 0.612);
+  border: 2px solid black;
+  width: 35px;
+  height: 35px;
+}
+
+.selected-marker img {
+  background-color: cyan;
+  border: 5px solid black;
+  width: 45px;
+  height: 45px;
+}
+
+.tide-marker-label {
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: cyan;
+  text-align: center;
+}

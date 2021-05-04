@@ -47,6 +47,11 @@ const CurrentsMarker = (props) => {
   // that are blocked by CORS restriction
   const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
 
+  // if (station.type === 'H') {
+  //   if (predictions) console.log('short', predictions.length);
+  //   if (predictionsLong) console.log('long', predictionsLong.length);
+  // }
+
   /* 
   using divIcon so we can embed an SVG. This will allow
   us to rotate via css or apply other styling as needed.
@@ -71,10 +76,6 @@ const CurrentsMarker = (props) => {
       let interval = 'MAX_SLACK';
       let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
-      // dev hack around the CORS issue with the 6 minute interval request
-      if (interval === '6') {
-        requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
-      }
       console.log('fetching... interval:', interval);
       const { data } = await axios.get(requestUrl);
       setPredictions(data.current_predictions.cp);
@@ -155,7 +156,7 @@ const CurrentsMarker = (props) => {
     try {
       // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
       let thesePredictions = predictionsLong ? predictionsLong : predictions;
-      if (thesePredictions) {
+      if (thesePredictions && thesePredictions.length > 0) {
         // map each prediction's time to array of date objects.
         let predictionTimes = thesePredictions.map(
           (station) => new Date(station.Time)
@@ -169,14 +170,15 @@ const CurrentsMarker = (props) => {
 
         // get prediction data at that index
         const prediction = thesePredictions[index];
-
-        // update marker direction based on this prediction
-        const direction = getRotationDir(prediction);
-        if (direction !== -1) {
-          setRotation(direction);
-          setSpeed(getSpeed(prediction));
-          setScale(getScale(prediction.Velocity_Major));
-          // console.log('scale', scale);
+        if (prediction) {
+          // update marker direction based on this prediction
+          const direction = getRotationDir(prediction);
+          if (direction !== -1) {
+            setRotation(direction);
+            setSpeed(getSpeed(prediction));
+            setScale(getScale(prediction.Velocity_Major));
+            // console.log('scale', scale);
+          }
         }
       }
     } catch (err) {
@@ -195,7 +197,7 @@ const CurrentsMarker = (props) => {
     // if it's a harmonic station, also get the detailed
     // interval data for marker rotation
     if (props.station.type === 'H') {
-      fetchPredictionsLong();
+      // fetchPredictionsLong();
     }
   }, [props.date]);
 
@@ -218,9 +220,9 @@ const CurrentsMarker = (props) => {
       position={station.position}
       icon={icon}
     >
-      <Popup className="kp-popup" maxHeight={300}>
+      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
         <h3 className="kp-popup-header">
-          {station.id} {title}
+          {station.id} {title} CURRENT
         </h3>
         <p className="kp-popup-text">{subtitle}</p>
         <p className="kp-popup-text">

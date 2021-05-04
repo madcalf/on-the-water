@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
@@ -28,7 +28,7 @@ export const MapView = (props) => {
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
-    iconSize: [25, 25],
+    iconSize: [50, 50],
     iconAnchor: [13, 0],
     className: 'map-icon',
   });
@@ -36,7 +36,7 @@ export const MapView = (props) => {
   // const center = [37.818809, -122.478161]; // SF
   const center = [40.69993, -73.997876]; // NYC
 
-  const maxDistMeters = 10000; //805000;
+  const maxDistMeters = 80000; //805000;
 
   // filter the bask data to something managable
   const baskCurrents = baskData.filter((station) => {
@@ -62,8 +62,26 @@ export const MapView = (props) => {
   // note need to filter out the dupes try by only including
   // the first station encountered. That seems to be the
   // smallest depth version.
-  const memo = [];
+  let memo = [];
   const noaaCurrents = noaaCurrentsData.stations.filter((station) => {
+    const stationPos = L.latLng(station.lat, station.lng);
+    if (memo.includes(station.id)) {
+      return false;
+    } else {
+      memo.push(station.id);
+      return (
+        station.id !== '' &&
+        station.type === 'H' &&
+        stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+      );
+    }
+  });
+
+  // note need to filter out the dupes try by only including
+  // the first station encountered. That seems to be the
+  // smallest depth version.
+  memo = [];
+  const noaaTides = noaaTidesData.stations.filter((station) => {
     const stationPos = L.latLng(station.lat, station.lng);
     if (memo.includes(station.id)) {
       return false;
@@ -81,6 +99,8 @@ export const MapView = (props) => {
   console.log('BASK ALL', baskData[0].marker.lat);
   console.log('BASK CURRENTS', baskCurrents.length);
   console.log('BASK TIDES', baskTides.length);
+  console.log('NOAA CURRENTS', noaaCurrents.length);
+  console.log('NOAA TIDES', noaaTides.length);
 
   return (
     <MapContainer center={center} zoom={14} scrollWheelZoom={true}>
@@ -160,7 +180,9 @@ export const MapView = (props) => {
               data.position = [station.marker.lat, station.marker.lng];
               data.id = station.noaa_id.split('_')[0];
               data.stationName = station.title;
-              return <TidesMarker key={data.id} station={data} />;
+              {
+                /* return <TidesMarker key={data.id} station={data} />; */
+              }
             })}
           </LayerGroup>
         </LayersControl.Overlay>
@@ -173,6 +195,18 @@ export const MapView = (props) => {
               data.id = station.id;
               data.stationName = station.name;
               return <CurrentsMarker key={data.id} station={data} />;
+            })}
+          </LayerGroup>
+        </LayersControl.Overlay>
+        <LayersControl.Overlay checked name="Tide Stations (NOAA)">
+          <LayerGroup>
+            {noaaTides.map((station) => {
+              const data = {};
+              data.type = station.type;
+              data.position = [station.lat, station.lng];
+              data.id = station.id;
+              data.stationName = station.name;
+              return <TidesMarker key={data.id} station={data} />;
             })}
           </LayerGroup>
         </LayersControl.Overlay>
