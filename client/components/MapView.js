@@ -24,6 +24,7 @@ import noaaMet from '../../public/data/noaa_stations_met.json';
 // END IMPORTS //
 
 export const MapView = (props) => {
+  // console.log('MapView');
   Icon.Default.imagePath = 'leaflet-images/';
 
   const icon = new Icon({
@@ -33,8 +34,8 @@ export const MapView = (props) => {
     className: 'map-icon',
   });
 
-  // const center = [37.818809, -122.478161]; // SF
-  const center = [40.69993, -73.997876]; // NYC
+  const center = [37.818809, -122.478161]; // SF
+  // const center = [40.69993, -73.997876]; // NYC
 
   const maxDistMeters = 80000; //805000;
 

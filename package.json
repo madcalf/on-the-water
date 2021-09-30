@@ -1,7 +1,7 @@
 {
   "name": "on-the-water",
   "version": "2.0.0",
-  "description": "Just playin around!",
+  "description": "Playin around with NOAA APIs!",
   "main": "index.js",
   "scripts": {
     "build": "webpack",

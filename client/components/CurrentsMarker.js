@@ -10,9 +10,7 @@ import { format, addMinutes, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
-const CurrentsMarker = (props) => {
-  // console.log('Marker', props);
-
+const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
   // hooks
   const map = useMap();
 
@@ -35,16 +33,15 @@ const CurrentsMarker = (props) => {
   const [currentsTable, setCurrentsTable] = useState(null);
 
   // set values for marker icon
-  const station = props.station;
   const name = station.stationName.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
-  const iconSvg = makeSvg(props.station.id);
+  const iconSvg = makeSvg(station.id);
 
   Icon.Default.imagePath = 'leaflet-images/';
 
   // dev hack that allows retrieving the 6 min intervals
-  // that are blocked by CORS restriction
+  // that are blocked by CORS restriction. Move these requests to backend?
   const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
 
   // if (station.type === 'H') {
@@ -70,13 +67,13 @@ const CurrentsMarker = (props) => {
 
   const fetchPredictionsShort = async () => {
     try {
-      const dateStr = `${props.date}`;
+      const dateStr = `${date}`;
       const rangeStr = `24`;
       // load the display data
       let interval = 'MAX_SLACK';
-      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
-      console.log('fetching... interval:', interval);
+      // console.log('fetching... interval:', interval);
       const { data } = await axios.get(requestUrl);
       setPredictions(data.current_predictions.cp);
     } catch (err) {
@@ -86,18 +83,20 @@ const CurrentsMarker = (props) => {
 
   const fetchPredictionsLong = async (interval) => {
     try {
-      const dateStr = `${props.date}`;
+      const dateStr = `${date}`;
       const rangeStr = `24`;
 
       let interval = '6';
-      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${props.station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
       // dev hack around the CORS issue with the 6 minute interval request
       if (interval === '6') {
         requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
+        // requestUrl = `{requestUrl}`;
       }
       const { data } = await axios.get(requestUrl);
-      setPredictionsLong(data.current_predictions.cp);
+      console.log('data', data);
+      // setPredictionsLong(data.current_predictions.cp);
     } catch (err) {
       console.log('Problem loading or setting currents data', err);
     }
@@ -130,7 +129,7 @@ const CurrentsMarker = (props) => {
   };
 
   const handleClick = () => {
-    props.selectMarker(station.id);
+    selectMarker(station.id);
   };
   // get the direction for rotation based on Velocity_Major
   // value in prediction
@@ -165,7 +164,7 @@ const CurrentsMarker = (props) => {
         // find closest time in predictions to the selected time
         // note time from slider is a number 0-1440,
         // representing minutes in a 24 span
-        const currentDateTime = addMinutes(new Date(props.date), props.time);
+        const currentDateTime = addMinutes(new Date(date), time);
         const index = closestIndexTo(currentDateTime, predictionTimes);
 
         // get prediction data at that index
@@ -187,7 +186,7 @@ const CurrentsMarker = (props) => {
         err
       );
     }
-  }, [props.time, predictions]);
+  }, [time, predictions]);
 
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
@@ -196,10 +195,10 @@ const CurrentsMarker = (props) => {
 
     // if it's a harmonic station, also get the detailed
     // interval data for marker rotation
-    if (props.station.type === 'H') {
-      // fetchPredictionsLong();
+    if (station.type === 'H') {
+      fetchPredictionsLong();
     }
-  }, [props.date]);
+  }, [date]);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
@@ -209,8 +208,8 @@ const CurrentsMarker = (props) => {
   }, [predictions]);
 
   useEffect(() => {
-    setselected(props.marker === station.id);
-  }, [props.marker]);
+    setselected(marker === station.id);
+  }, [marker]);
 
   // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (

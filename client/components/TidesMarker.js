@@ -10,7 +10,7 @@ import { format, addMinutes, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
-const TidesMarker = (props) => {
+const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
   // hooks
   const map = useMap();
 
@@ -26,19 +26,13 @@ const TidesMarker = (props) => {
   // For popup display
   const [predictions, setPredictions] = useState(null);
 
-  // // predictions on 6 minute interval (Harmonic stations
-  // // only). For rotations
-  // const [predictionsLong, setPredictionsLong] = useState(null);
-
   // formatted table of predictions data
   const [tideTable, setTidesTable] = useState(null);
 
   // set values for marker icon
-  const station = props.station;
   const name = station.stationName.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
-  // const iconSvg = makeSvg(props.station.id);
 
   Icon.Default.imagePath = 'leaflet-images/';
   const iconUrl = Icon.Default.imagePath + 'tide_low.png';
@@ -65,7 +59,7 @@ const TidesMarker = (props) => {
 
   const fetchPredictions = async () => {
     try {
-      const dateStr = `${props.date}`;
+      const dateStr = `${date}`;
       const rangeStr = `24`;
       const interval = `hilo`;
 
@@ -105,13 +99,11 @@ const TidesMarker = (props) => {
   };
 
   const handleClick = () => {
-    props.selectMarker(station.id);
+    selectMarker(station.id);
   };
 
   useEffect(() => {
     try {
-      // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
-      // let predictions = predictionsLong ? predictionsLong : predictions;
       if (predictions && predictions.length > 0) {
         // map each prediction's time to array of date objects.
         let predictionTimes = predictions.map((station) => new Date(station.t));
@@ -119,13 +111,13 @@ const TidesMarker = (props) => {
         // find closest time in predictions to the selected time
         // note time from slider is a number 0-1440,
         // representing minutes in a 24 span
-        const currentDateTime = addMinutes(new Date(props.date), props.time);
+        const currentDateTime = addMinutes(new Date(date), time);
         const index = closestIndexTo(currentDateTime, predictionTimes);
 
         // get prediction data at that index
         const prediction = predictions[index];
         if (prediction) {
-          // update marker direction based on this prediction
+          // update marker height based on this prediction
           const height = prediction.v;
           setHeight(height);
         }
@@ -136,13 +128,12 @@ const TidesMarker = (props) => {
         err
       );
     }
-  }, [props.time, predictions]);
+  }, [time, predictions]);
 
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
-    // all markers get the MAX_SLACK data for popup view
     fetchPredictions();
-  }, [props.date]);
+  }, [date]);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
@@ -152,8 +143,8 @@ const TidesMarker = (props) => {
   }, [predictions]);
 
   useEffect(() => {
-    setselected(props.marker === station.id);
-  }, [props.marker]);
+    setselected(marker === station.id);
+  }, [marker]);
 
   return (
     <Marker
