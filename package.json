@@ -44,7 +44,7 @@
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/preset-react": "^7.12.10",
     "@babel/register": "^7.12.10",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "axios-mock-adapter": "^1.16.0",
     "babel-loader": "^8.2.2",
     "chai": "^4.2.0",
