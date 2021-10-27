@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { format } from 'date-fns';
-import auth from './auth';
+// import auth from './auth';
 
 // DATE
 const SET_DATE = 'SET_DATE';
@@ -58,7 +58,6 @@ const markerReducer = (state = null, action) => {
 };
 
 const reducer = combineReducers({
-  auth,
   date: dateReducer,
   time: timeReducer,
   marker: markerReducer,
@@ -73,4 +72,4 @@ const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 const store = createStore(reducer, middleware);
 
 export default store;
-export * from './auth';
+// export * from './auth';

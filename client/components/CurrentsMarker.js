@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
-import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
+// import { svgString } from '../../public/leaflet-images/new_arrow.svg';
+// import arrow from '../images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
 import { format, addMinutes, closestIndexTo } from 'date-fns';
@@ -38,7 +39,7 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
   const subtitle = name.join(',');
   const iconSvg = makeSvg(station.id);
 
-  Icon.Default.imagePath = 'leaflet-images/';
+  Icon.Default.imagePath = '../images  '; //'leaflet-images/';
 
   // dev hack that allows retrieving the 6 min intervals
   // that are blocked by CORS restriction. Move these requests to backend?

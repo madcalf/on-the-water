@@ -219,10 +219,10 @@ export const MapView = (props) => {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
-  return {
-    username: state.auth.username,
-  };
-};
+// const mapState = (state) => {
+//   return {
+//     username: 'delete this',
+//   };
+// };
 
-export default connect(mapState)(MapView);
+export default MapView;
