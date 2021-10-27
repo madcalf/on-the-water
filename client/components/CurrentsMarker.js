@@ -39,7 +39,8 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
   const subtitle = name.join(',');
   const iconSvg = makeSvg(station.id);
 
-  Icon.Default.imagePath = '../images  '; //'leaflet-images/';
+  // Don't think we need this if using the svg data directly
+  // Icon.Default.imagePath = '../images  '; //'leaflet-images/';
 
   // dev hack that allows retrieving the 6 min intervals
   // that are blocked by CORS restriction. Move these requests to backend?

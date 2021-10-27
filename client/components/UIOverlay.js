@@ -17,6 +17,7 @@ const UIOverlay = (props) => {
       <Grid container justify="space-around">
         <DatePicker />
         <TimeSlider />
+        <div>Welcome to Mordor!!!!</div>
         <div>{`${selectedDate}`}</div>
       </Grid>
     </div>
