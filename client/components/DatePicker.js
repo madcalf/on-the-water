@@ -13,7 +13,8 @@ const DatePicker = (props) => {
     // local state for display
     setSelectedDate(value);
     // app state
-    props.setDate(format(date, 'yyyyMMdd'));
+    props.setDate(date);
+    // props.setDate(format(date, 'yyyyMMdd'));
   };
 
   return (

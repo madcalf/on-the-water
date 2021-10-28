@@ -7,7 +7,7 @@ import { Icon } from 'leaflet';
 // import arrow from '../images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
-import { format, addMinutes, closestIndexTo } from 'date-fns';
+import { format, addMinutes, closestIndexTo, parseISO } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
@@ -42,10 +42,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
   // Don't think we need this if using the svg data directly
   // Icon.Default.imagePath = '../images  '; //'leaflet-images/';
 
-  // dev hack that allows retrieving the 6 min intervals
-  // that are blocked by CORS restriction. Move these requests to backend?
-  const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
-
   // if (station.type === 'H') {
   //   if (predictions) console.log('short', predictions.length);
   //   if (predictionsLong) console.log('long', predictionsLong.length);
@@ -69,23 +65,24 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
 
   const fetchPredictionsShort = async () => {
     try {
-      const dateStr = `${date}`;
+      // if (station.id !== 'SFB1201') return; // TEMP
+      const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
       // load the display data
       let interval = 'MAX_SLACK';
       const { data } = await axios.get(
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
-
       setPredictions(data.current_predictions.cp);
     } catch (err) {
-      console.log('Problem loading or setting currents data', err);
+      console.log('Problem loading or setting currents data.', err);
     }
   };
 
   const fetchPredictionsLong = async (interval) => {
     try {
-      const dateStr = `${date}`;
+      // if (station.id !== 'SFB1201') return; // TEMP
+      const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
 
       let interval = '6';
@@ -93,7 +90,7 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
 
-      // setPredictionsLong(data.current_predictions.cp);
+      setPredictionsLong(data.current_predictions.cp);
     } catch (err) {
       console.log('Problem loading or setting currents data', err.message);
     }
@@ -173,7 +170,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
             setRotation(direction);
             setSpeed(getSpeed(prediction));
             setScale(getScale(prediction.Velocity_Major));
-            // console.log('scale', scale);
           }
         }
       }

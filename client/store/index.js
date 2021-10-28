@@ -12,7 +12,8 @@ export const setDate = (date) => {
 };
 
 // DATE reducer
-const today = format(new Date(), 'yyyyMMdd');
+// const today = format(new Date(), 'yyyyMMdd');
+const today = new Date();
 const dateReducer = (state = today, action) => {
   switch (action.type) {
     case SET_DATE:
