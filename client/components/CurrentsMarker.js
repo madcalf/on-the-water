@@ -69,8 +69,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
 
   const fetchPredictionsShort = async () => {
     try {
-      // TEMP
-      if (station.id !== 's05010') return;
       const dateStr = `${date}`;
       const rangeStr = `24`;
       // load the display data
@@ -79,12 +77,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
 
-      // let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
-
-      // console.log('fetching... interval:', interval);
-      // const { data } = await axios.get(requestUrl);
-
-      // console.log('TEST', data);
       setPredictions(data.current_predictions.cp);
     } catch (err) {
       console.log('Problem loading or setting currents data', err);
@@ -93,7 +85,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
 
   const fetchPredictionsLong = async (interval) => {
     try {
-      if (station.id !== 's05010') return;
       const dateStr = `${date}`;
       const rangeStr = `24`;
 
@@ -102,15 +93,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
 
-      // let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
-
-      // // dev hack around the CORS issue with the 6 minute interval request
-      // if (interval === '6') {
-      //   requestUrl = `${CORS_DEV_PREFIX}${requestUrl}`;
-      //   // requestUrl = `{requestUrl}`;
-      // }
-      // const { data } = await axios.get(requestUrl);
-      console.log('data', data);
       // setPredictionsLong(data.current_predictions.cp);
     } catch (err) {
       console.log('Problem loading or setting currents data', err.message);

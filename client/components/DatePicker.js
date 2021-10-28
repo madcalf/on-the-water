@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { setDate } from '../store/';
 import { KeyboardDatePicker } from '@material-ui/pickers';
+import { format } from 'date-fns';
 
 const DatePicker = (props) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -9,8 +10,10 @@ const DatePicker = (props) => {
   const handleChange = (date, value) => {
     console.dir(date);
     console.dir(value);
+    // local state for display
     setSelectedDate(value);
-    props.setDate(value);
+    // app state
+    props.setDate(format(date, 'yyyyMMdd'));
   };
 
   return (
