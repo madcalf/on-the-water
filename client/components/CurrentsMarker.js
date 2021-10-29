@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
-import { Icon } from 'leaflet';
-// import { svgString } from '../../public/leaflet-images/new_arrow.svg';
-// import arrow from '../images/div-icon-arrow.svg';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
 import { format, addMinutes, closestIndexTo, parseISO } from 'date-fns';
@@ -12,10 +9,8 @@ import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
 const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
-  // hooks
   const map = useMap();
 
-  // rotation of marker icon
   const [isLoading, setIsLoading] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [speed, setSpeed] = useState(0);
@@ -26,7 +21,7 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
   // For popup display
   const [predictions, setPredictions] = useState(null);
 
-  // predictions on 6 minute interval (Harmonic stations
+  // predictions data on 6 minute interval (Harmonic stations
   // only). For rotations
   const [predictionsLong, setPredictionsLong] = useState(null);
 
@@ -39,28 +34,15 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
   const subtitle = name.join(',');
   const iconSvg = makeSvg(station.id);
 
-  // Don't think we need this if using the svg data directly
-  // Icon.Default.imagePath = '../images  '; //'leaflet-images/';
-
-  // if (station.type === 'H') {
-  //   if (predictions) console.log('short', predictions.length);
-  //   if (predictionsLong) console.log('long', predictionsLong.length);
-  // }
-
-  /* 
-  using divIcon so we can embed an SVG. This will allow
-  us to rotate via css or apply other styling as needed.
-  Note: the icon size below appears to be ignored or
-  maybe overridden by the css or the svg directly?
-  For some reason applying scale, limits rotation to one direction
-   */
   const icon = L.divIcon({
     className: 'my-div-icon',
-    iconSize: [30, 50],
-    iconAnchor: [25, 0],
+    iconAnchor: [16, 0],
+    iconSize: L.point(32, 32),
     html: `<div class=${
       selected ? 'selected-marker' : ''
-    } marker-container"><div style="transform: rotate(${rotation}deg)" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
+    } marker-container"><div style="transform: rotate(${rotation}deg) scale(${Math.abs(
+      speed
+    )})" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictionsShort = async () => {

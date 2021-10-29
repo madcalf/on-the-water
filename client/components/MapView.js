@@ -6,8 +6,6 @@ import {
   LayersControl,
   LayerGroup,
   Circle,
-  FeatureGroup,
-  Rectangle,
   MapContainer,
   TileLayer,
   Marker,
@@ -29,7 +27,7 @@ export const MapView = (props) => {
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
-    iconSize: [50, 50],
+    iconSize: [32, 32],
     iconAnchor: [13, 0],
     className: 'map-icon',
   });

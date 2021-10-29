@@ -50,15 +50,6 @@ p.kp-popup-text {
 markers which are svg images. The classes are specified in
 the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
 */
-#arrow-fill {
-  fill: #ffc400;
-}
-
-#arrow-border {
-  stroke: black;
-  stroke-width: 2;
-}
-
 .overlay {
   position: fixed;
   top: 90%;
@@ -95,9 +86,9 @@ tr:nth-child(even) {
 }
 
 .stroke-text {
+  color: white;
   --stroke-color: black;
   --stroke-width: 2px;
-  color: #ffc400;
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color), calc(var(--stroke-width) * -1) 0 0 var(--stroke-color), 0 var(--stroke-width) 0 var(--stroke-color), 0 calc(var(--stroke-width) * -1) 0 var(--stroke-color);
 }
 
@@ -135,5 +126,9 @@ tr:nth-child(even) {
   font-size: 1.4rem;
   color: cyan;
   text-align: center;
+}
+
+svg * {
+  transform-box: fill-box;
 }
 /*# sourceMappingURL=style.css.map */
