@@ -1,9 +1,6 @@
-console.log('server/api/index.js 0');
 const router = require('express').Router();
 const axios = require('axios');
 module.exports = router;
-
-console.log('server/api/index.js 1');
 
 router.get(
   '/currents/:stationId/:dateStr/:rangeStr/:interval',
