@@ -2,7 +2,7 @@
   "name": "on-the-water",
   "version": "2.0.0",
   "description": "Trip planning tool using NOAA Tides and Current APIs",
-  "main": "server/index.js",
+  "main": "client/index.js",
   "scripts": {
     "build": "webpack",
     "start": "node server",
