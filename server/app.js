@@ -1,10 +1,13 @@
+console.log('server/app.js 0');
 const PORT = process.env.PORT || 9000;
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const chalk = require('chalk');
 const app = express();
-module.exports = app;
+// module.exports = app;
+
+console.log('server/app.js 1');
 
 // logging middleware
 app.use(morgan('dev'));
