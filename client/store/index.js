@@ -1,8 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { format } from 'date-fns';
 
 // DATE
 const SET_DATE = 'SET_DATE';
@@ -12,8 +10,8 @@ export const setDate = (date) => {
 };
 
 // DATE reducer
-const today = new Date();
-const dateReducer = (state = today, action) => {
+const initialValue = new Date();
+const dateReducer = (state = initialValue, action) => {
   switch (action.type) {
     case SET_DATE:
       return action.date;
@@ -22,18 +20,18 @@ const dateReducer = (state = today, action) => {
   }
 };
 
-// TIME
-const SET_TIME = 'SET_TIME';
+// ADJUSTED_DATE
+const SET_ADJUSTED_DATE = 'SET_ADJUSTED_DATE';
 
-export const setTime = (ms, formatted) => {
-  return { type: SET_TIME, ms, formatted };
+export const setAdjustedDate = (date) => {
+  return { type: SET_ADJUSTED_DATE, date };
 };
 
-// TIME reducer
-const timeReducer = (state = { ms: 0, formatted: null }, action) => {
+// ADJUSTED_DATE reducer
+const adjustedDateReducer = (state = 0, action) => {
   switch (action.type) {
-    case SET_TIME:
-      return { ms: action.ms, formatted: action.formatted };
+    case SET_ADJUSTED_DATE:
+      return action.date;
     default:
       return state;
   }
@@ -57,7 +55,7 @@ const markerReducer = (state = null, action) => {
 
 const reducer = combineReducers({
   date: dateReducer,
-  time: timeReducer,
+  adjustedDate: adjustedDateReducer,
   marker: markerReducer,
 });
 

@@ -28,7 +28,7 @@ const DatePicker = (props) => {
       margin="normal"
       variant="inline"
       // showTodayButton={true}// only works on dialog variant
-      id="date-picker-dialog"
+      id="date-picker-keyboard"
       label="Date"
       format="MMMM dd yyyy"
       value={selectedDate}

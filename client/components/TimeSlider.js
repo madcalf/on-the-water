@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-import { setTime } from '../store';
-import { format, addMinutes, closestTo } from 'date-fns';
-import { scaleTime } from 'd3-scale';
+import { setAdjustedDate } from '../store';
+import { format, addMinutes } from 'date-fns';
 
 const useStyles = makeStyles({
   root: {
@@ -14,36 +13,33 @@ const useStyles = makeStyles({
 });
 
 // // displays in the value label, if it's on
-function valuetext(value) {
+function valueText(value) {
   return `Time: ${value}`;
 }
 
-export function TimeSlider({ date, time, setTime }) {
+export function TimeSlider({ date, adjustedDate, setAdjustedDate }) {
   const classes = useStyles();
-  let [dateTime, setDateTime] = useState();
-
-  const today = format(new Date(), 'MMMM dd yyyy h:mm aaa');
+  let [currentValue, setCurrentValue] = useState(date);
 
   function handleChange(event, minutes) {
-    let dt = new Date(date);
-    dt = addMinutes(new Date(date), minutes);
-    console.log(dt);
-
-    // local state to display in this component
-    setDateTime(format(dt, 'MMMM dd yyyy h:mm aaa'));
-
-    // app state
-    setTime(minutes);
+    const d = addMinutes(new Date(date), minutes);
+    setCurrentValue(d);
   }
+
+  useEffect(() => {
+    setAdjustedDate(currentValue);
+  }, [currentValue]);
 
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider-small-steps" gutterBottom>
-        <span className="time-slider-header">{time}</span>
+        <span className="time-slider-header">
+          {format(currentValue, 'h:mm aaa')}
+        </span>
       </Typography>
       <Slider
         defaultValue={0}
-        getAriaValueText={valuetext}
+        getAriaValueText={valueText}
         aria-labelledby="discrete-slider-small-steps"
         step={10}
         marks
@@ -59,7 +55,7 @@ export function TimeSlider({ date, time, setTime }) {
 const mapStateToProps = (state) => {
   return {
     date: state.date,
-    time: state.time.ms,
+    adjustedDate: state.adjustedDate,
   };
 };
-export default connect(mapStateToProps, { setTime })(TimeSlider);
+export default connect(mapStateToProps, { setAdjustedDate })(TimeSlider);

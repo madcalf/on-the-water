@@ -29,7 +29,6 @@ router.get(
     const requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${stationId}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
     try {
-      // console.log('TIDE REQUEST', requestUrl);
       const { data } = await axios.get(requestUrl);
       res.json(data);
     } catch (err) {

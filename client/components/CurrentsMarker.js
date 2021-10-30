@@ -4,11 +4,17 @@ import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
-import { format, addMinutes, closestIndexTo, parseISO } from 'date-fns';
+import { format, closestIndexTo, parseISO } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
-const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
+const CurrentsMarker = ({
+  station,
+  date,
+  adjustedDate,
+  marker,
+  selectMarker,
+}) => {
   const map = useMap();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -133,15 +139,12 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
       let thesePredictions = predictionsLong ? predictionsLong : predictions;
       if (thesePredictions && thesePredictions.length > 0) {
         // map each prediction's time to array of date objects.
-        let predictionTimes = thesePredictions.map(
+        let predictionDates = thesePredictions.map(
           (station) => new Date(station.Time)
         );
 
         // find closest time in predictions to the selected time
-        // note time from slider is a number 0-1440,
-        // representing minutes in a 24 span
-        const currentDateTime = addMinutes(new Date(date), time);
-        const index = closestIndexTo(currentDateTime, predictionTimes);
+        const index = closestIndexTo(adjustedDate, predictionDates);
 
         // get prediction data at that index
         const prediction = thesePredictions[index];
@@ -161,7 +164,7 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
         err
       );
     }
-  }, [time, predictions]);
+  }, [adjustedDate, predictions]);
 
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
@@ -186,7 +189,6 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
     setselected(marker === station.id);
   }, [marker]);
 
-  // props: {station: {position: [lat,lon], stationId: xx, stationName: xx, url:??}}
   return (
     <Marker
       eventHandlers={{ click: () => handleClick() }}
@@ -211,7 +213,7 @@ const CurrentsMarker = ({ station, date, time, marker, selectMarker }) => {
 const mapState = (state) => {
   return {
     date: state.date,
-    time: state.time.ms,
+    adjustedDate: state.adjustedDate,
     marker: state.marker,
   };
 };

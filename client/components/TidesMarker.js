@@ -3,15 +3,11 @@ import { connect } from 'react-redux';
 import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
-import { svgString } from '../../public/leaflet-images/div-icon-arrow.svg';
-import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
 import { format, addMinutes, closestIndexTo } from 'date-fns';
-import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
-const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
-  // hooks
+const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const map = useMap();
 
   // rotation of marker icon
@@ -51,8 +47,6 @@ const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
       const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
       const interval = `hilo`;
-
-      // let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
       const { data } = await axios.get(
         `/api/tides/${station.id}/${dateStr}/${rangeStr}/${interval}`
@@ -100,10 +94,7 @@ const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
         let predictionTimes = predictions.map((station) => new Date(station.t));
 
         // find closest time in predictions to the selected time
-        // note time from slider is a number 0-1440,
-        // representing minutes in a 24 span
-        const currentDateTime = addMinutes(new Date(date), time);
-        const index = closestIndexTo(currentDateTime, predictionTimes);
+        const index = closestIndexTo(adjustedDate, predictionTimes);
 
         // get prediction data at that index
         const prediction = predictions[index];
@@ -119,7 +110,7 @@ const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
         err
       );
     }
-  }, [time, predictions]);
+  }, [adjustedDate, date, predictions]);
 
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
@@ -161,7 +152,7 @@ const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
 const mapState = (state) => {
   return {
     date: state.date,
-    time: state.time.ms,
+    adjustedDate: state.adjustedDate,
     marker: state.marker,
   };
 };
