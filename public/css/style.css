@@ -27,11 +27,13 @@ header {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  background-color: slategray;
+  color: black;
+  background-color: white;
   z-index: 500;
 }
 
 .sidebar {
+  color: black;
   width: 25%;
   height: 100vh;
   display: -webkit-box;
@@ -43,7 +45,7 @@ header {
           flex-direction: column;
   -ms-flex-line-pack: center;
       align-content: center;
-  background-color: slategray;
+  background-color: white;
   font-size: 1.3rem;
   padding: 40px;
   text-align: left;

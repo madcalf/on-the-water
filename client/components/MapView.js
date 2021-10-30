@@ -32,7 +32,7 @@ export const MapView = (props) => {
   const center = [37.818809, -122.478161]; // SF
   // const center = [40.69993, -73.997876]; // NYC
 
-  const maxDistMeters = 80000; //805000;
+  const maxDistMeters = 70000; //805000;
 
   // // filter the bask data to something managable
   // const baskCurrents = baskData.filter((station) => {

@@ -25,10 +25,8 @@ export function TimeSlider(props) {
   const today = format(new Date(), 'MMMM dd yyyy h:mm aaa');
 
   function handleChange(event, minutes) {
-    console.log('handleChange date', props.date);
     let dt = new Date(props.date);
     dt = addMinutes(new Date(props.date), minutes);
-    // console.log('dt', dt);
     setDateTime(format(dt, 'MMMM dd yyyy h:mm aaa'));
 
     // send minutes to app state

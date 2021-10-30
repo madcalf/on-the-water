@@ -37,17 +37,6 @@ const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
   Icon.Default.imagePath = 'leaflet-images/';
   const iconUrl = Icon.Default.imagePath + 'tide_low.png';
 
-  // dev hack that allows retrieving the 6 min intervals
-  // that are blocked by CORS restriction
-  const CORS_DEV_PREFIX = 'https://cors-anywhere.herokuapp.com/';
-
-  // const icon = new Icon({
-  //   iconUrl: Icon.Default.imagePath + 'tide_low.png',
-  //   iconSize: [50, 60],
-  //   iconAnchor: [25, 0],
-  //   className: 'map-icon',
-  // });
-
   const icon = L.divIcon({
     iconSize: [30, 30],
     iconAnchor: [25, 0],
@@ -59,13 +48,15 @@ const TidesMarker = ({ station, date, time, marker, selectMarker }) => {
 
   const fetchPredictions = async () => {
     try {
-      const dateStr = `${date}`;
+      const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
       const interval = `hilo`;
 
-      let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
+      // let requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${station.id}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
-      const { data } = await axios.get(requestUrl);
+      const { data } = await axios.get(
+        `/api/tides/${station.id}/${dateStr}/${rangeStr}/${interval}`
+      );
       setPredictions(data.predictions);
     } catch (err) {
       console.log('Problem loading or setting tide data', err);
