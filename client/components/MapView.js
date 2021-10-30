@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
 import {
@@ -13,21 +12,19 @@ import {
 } from 'react-leaflet';
 import CurrentsMarker from './CurrentsMarker';
 import TidesMarker from './TidesMarker';
-import BuoyMarker from './BuoyMarker';
-
-import baskData from '../../public/data/bask_datapoints.json';
 import noaaCurrentsData from '../../public/data/noaa_stations_currents.json';
 import noaaTidesData from '../../public/data/noaa_stations_tides.json';
-import noaaMet from '../../public/data/noaa_stations_met.json';
-// END IMPORTS //
+import baskData from '../../public/data/bask_datapoints.json';
+// Later...
+// import BuoyMarker from './BuoyMarker';
+// import noaaMet from '../../public/data/noaa_stations_met.json';
 
 export const MapView = (props) => {
-  // console.log('MapView');
   Icon.Default.imagePath = 'leaflet-images/';
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
-    iconSize: [32, 32],
+    iconSize: [25, 25],
     iconAnchor: [13, 0],
     className: 'map-icon',
   });
@@ -37,26 +34,26 @@ export const MapView = (props) => {
 
   const maxDistMeters = 80000; //805000;
 
-  // filter the bask data to something managable
-  const baskCurrents = baskData.filter((station) => {
-    const stationPos = L.latLng(station.marker.lat, station.marker.lng);
-    return (
-      station.noaa_id !== '' &&
-      station.marker &&
-      station.station_type === 'current' &&
-      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
-    );
-  });
+  // // filter the bask data to something managable
+  // const baskCurrents = baskData.filter((station) => {
+  //   const stationPos = L.latLng(station.marker.lat, station.marker.lng);
+  //   return (
+  //     station.noaa_id !== '' &&
+  //     station.marker &&
+  //     station.station_type === 'current' &&
+  //     stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+  //   );
+  // });
 
-  const baskTides = baskData.filter((station) => {
-    const stationPos = L.latLng(station.marker.lat, station.marker.lng);
-    return (
-      station.noaa_id !== '' &&
-      station.marker &&
-      station.station_type === 'tide' &&
-      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
-    );
-  });
+  // const baskTides = baskData.filter((station) => {
+  //   const stationPos = L.latLng(station.marker.lat, station.marker.lng);
+  //   return (
+  //     station.noaa_id !== '' &&
+  //     station.marker &&
+  //     station.station_type === 'tide' &&
+  //     stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+  //   );
+  // });
 
   // note need to filter out the dupes try by only including
   // the first station encountered. That seems to be the
@@ -96,8 +93,8 @@ export const MapView = (props) => {
   // console.log('noaa currents length', noaaCurrents.length, memo);
 
   console.log('BASK ALL', baskData[0].marker.lat);
-  console.log('BASK CURRENTS', baskCurrents.length);
-  console.log('BASK TIDES', baskTides.length);
+  // console.log('BASK CURRENTS', baskCurrents.length);
+  // console.log('BASK TIDES', baskTides.length);
   console.log('NOAA CURRENTS', noaaCurrents.length);
   console.log('NOAA TIDES', noaaTides.length);
 
@@ -110,12 +107,21 @@ export const MapView = (props) => {
             url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
+
         <LayersControl.BaseLayer checked name="NOAA Nautical Charts">
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">NOAA</a> contributors'
             url="//tileservice.charts.noaa.gov/tiles/50000_1/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
+
+        <LayersControl.BaseLayer checked name="OpenStreetMap.Mapnik">
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
+          />
+        </LayersControl.BaseLayer>
+
         <LayersControl.BaseLayer checked name="OpenStreetMap.Mapnik">
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -157,34 +163,7 @@ export const MapView = (props) => {
             </Marker>
           </LayerGroup>
         </LayersControl.Overlay>
-        <LayersControl.Overlay unchecked name="Current Stations (BASK)">
-          <LayerGroup>
-            {baskCurrents.map((station) => {
-              const data = {};
-              data.type = station.station_type;
-              data.position = [station.marker.lat, station.marker.lng];
-              data.id = station.noaa_id.split('_')[0];
-              data.stationName = station.title;
-              {
-                /* return <CurrentsMarker key={data.id} station={data} />; */
-              }
-            })}
-          </LayerGroup>
-        </LayersControl.Overlay>
-        <LayersControl.Overlay name="Tide Stations (BASK)">
-          <LayerGroup name="Tide Stations">
-            {baskTides.map((station) => {
-              const data = {};
-              data.type = station.station_type;
-              data.position = [station.marker.lat, station.marker.lng];
-              data.id = station.noaa_id.split('_')[0];
-              data.stationName = station.title;
-              {
-                /* return <TidesMarker key={data.id} station={data} />; */
-              }
-            })}
-          </LayerGroup>
-        </LayersControl.Overlay>
+
         <LayersControl.Overlay checked name="Currents Stations (NOAA)">
           <LayerGroup>
             {noaaCurrents.map((station) => {
@@ -197,6 +176,7 @@ export const MapView = (props) => {
             })}
           </LayerGroup>
         </LayersControl.Overlay>
+
         <LayersControl.Overlay checked name="Tide Stations (NOAA)">
           <LayerGroup>
             {noaaTides.map((station) => {
@@ -213,14 +193,5 @@ export const MapView = (props) => {
     </MapContainer>
   );
 };
-
-/**
- * CONTAINER
- */
-// const mapState = (state) => {
-//   return {
-//     username: 'delete this',
-//   };
-// };
 
 export default MapView;

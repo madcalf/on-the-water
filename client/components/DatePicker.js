@@ -14,7 +14,6 @@ const DatePicker = (props) => {
     setSelectedDate(value);
     // app state
     props.setDate(date);
-    // props.setDate(format(date, 'yyyyMMdd'));
   };
 
   return (

@@ -10,7 +10,7 @@ import { addMinutes, closestTo, closestIndexTo } from 'date-fns';
 
 const useStyles = makeStyles({
   root: {
-    width: 500,
+    width: 300,
   },
 });
 
@@ -22,12 +22,13 @@ function valuetext(value) {
 export function TimeSlider(props) {
   const classes = useStyles();
   let [dateTime, setDateTime] = useState();
+  const today = format(new Date(), 'MMMM dd yyyy h:mm aaa');
 
   function handleChange(event, minutes) {
     console.log('handleChange date', props.date);
     let dt = new Date(props.date);
     dt = addMinutes(new Date(props.date), minutes);
-    console.log('dt', dt);
+    // console.log('dt', dt);
     setDateTime(format(dt, 'MMMM dd yyyy h:mm aaa'));
 
     // send minutes to app state
@@ -37,7 +38,9 @@ export function TimeSlider(props) {
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider-small-steps" gutterBottom>
-        <span className="time-slider-header">{dateTime}</span>
+        <span className="time-slider-header">
+          {dateTime ? dateTime : today}
+        </span>
       </Typography>
       <Slider
         defaultValue={0}

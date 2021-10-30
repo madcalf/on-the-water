@@ -33,6 +33,7 @@
     "history": "^4.9.0",
     "leaflet": "^1.7.1",
     "morgan": "^1.9.1",
+    "node-sass": "^6.0.1",
     "pg": "^8.5.1",
     "prop-types": "^15.7.2",
     "react-compound-slider": "^3.3.1",
@@ -46,6 +47,7 @@
     "axios-mock-adapter": "^1.16.0",
     "babel-loader": "^8.2.2",
     "chai": "^4.2.0",
+    "css-loader": "^6.5.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -62,9 +64,12 @@
     "redux-logger": "^3.0.6",
     "redux-mock-store": "^1.5.3",
     "redux-thunk": "^2.3.0",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^3.3.1",
     "supertest": "^4.0.2",
     "svg-url-loader": "^7.1.1",
-    "webpack": "^5.15.0",
+    "webpack": "^5.61.0",
     "webpack-cli": "^4.3.1"
   }
 }
