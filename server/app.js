@@ -1,3 +1,4 @@
+const PORT = process.env.PORT || 9000;
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
@@ -41,3 +42,16 @@ app.use((err, req, res, next) => {
   if (err.status !== 404) console.error('STACK', err.stack);
   res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
+
+// =============== //
+// Start the server
+// =============== //
+const init = async () => {
+  try {
+    app.listen(PORT, () => console.log(`Starting server on port ${PORT}`));
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+init();
