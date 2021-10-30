@@ -4,7 +4,7 @@ import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 
-import MapView from './Mapview';
+import MapView from './MapView';
 import UIOverlay from './UIOverlay';
 
 const Home = () => {
