@@ -1,9 +1,9 @@
-console.log('server/index.js 0');
+console.log('server/api/index.js 0');
 const router = require('express').Router();
 const axios = require('axios');
 module.exports = router;
 
-console.log('server/index.js 1');
+console.log('server/api/index.js 1');
 
 router.get(
   '/currents/:stationId/:dateStr/:rangeStr/:interval',
@@ -51,4 +51,4 @@ router.use((req, res, next) => {
   next(error);
 });
 
-console.log('server/index.js 2');
+console.log('server/api/index.js 2');
