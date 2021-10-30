@@ -12,10 +12,10 @@ const App = () => {
         <Sidebar />
         <MapView className="mapView" />
       </main>
-      <header className={'header'}>
+      {/* <header className={'header'}>
         <h1>On The Water</h1>
         <p>Trip Planning tool for coastal kayakers</p>
-      </header>
+      </header> */}
     </MuiPickersUtilsProvider>
   );
 };

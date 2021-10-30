@@ -4,9 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import { setTime } from '../store';
-import { subDays, startOfToday, format } from 'date-fns'; // not sure if i need these
+import { format, addMinutes, closestTo } from 'date-fns';
 import { scaleTime } from 'd3-scale';
-import { addMinutes, closestTo, closestIndexTo } from 'date-fns';
 
 const useStyles = makeStyles({
   root: {
@@ -16,29 +15,31 @@ const useStyles = makeStyles({
 
 // // displays in the value label, if it's on
 function valuetext(value) {
-  return `${value}°C`;
+  return `Time: ${value}`;
 }
 
-export function TimeSlider(props) {
+export function TimeSlider({ date, time, setTime }) {
   const classes = useStyles();
   let [dateTime, setDateTime] = useState();
+
   const today = format(new Date(), 'MMMM dd yyyy h:mm aaa');
 
   function handleChange(event, minutes) {
-    let dt = new Date(props.date);
-    dt = addMinutes(new Date(props.date), minutes);
+    let dt = new Date(date);
+    dt = addMinutes(new Date(date), minutes);
+    console.log(dt);
+
+    // local state to display in this component
     setDateTime(format(dt, 'MMMM dd yyyy h:mm aaa'));
 
-    // send minutes to app state
-    props.setTime(minutes);
+    // app state
+    setTime(minutes);
   }
 
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider-small-steps" gutterBottom>
-        <span className="time-slider-header">
-          {dateTime ? dateTime : today}
-        </span>
+        <span className="time-slider-header">{time}</span>
       </Typography>
       <Slider
         defaultValue={0}
@@ -47,7 +48,7 @@ export function TimeSlider(props) {
         step={10}
         marks
         min={0}
-        max={1430}
+        max={1439}
         valueLabelDisplay="off"
         onChange={handleChange}
       />

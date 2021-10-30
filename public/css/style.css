@@ -99,14 +99,17 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
 
 .MuiSlider-track {
   height: 15px !important;
+  color: #61dafb !important;
 }
 
 .MuiSlider-rail {
   height: 15px !important;
+  color: #61dafb !important;
 }
 
 .MuiSlider-mark {
   height: 15px !important;
+  color: #61dafb !important;
 }
 
 .MuiSlider-thumb {
@@ -114,6 +117,12 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
   width: 50px !important;
   color: white;
   border-radius: 5px !important;
+  border: 1px solid black;
+}
+
+.MuiInputBase-input {
+  font-size: x-large !important;
+  font-weight: bold !important;
 }
 
 table {

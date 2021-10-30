@@ -125,14 +125,17 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
 
 .MuiSlider-track {
   height: $sliderTrackHeight !important;
+  color: $secondary-color !important;
 }
 
 .MuiSlider-rail {
   height: $sliderTrackHeight !important;
+  color: $secondary-color !important;
 }
 
 .MuiSlider-mark {
   height: $sliderTrackHeight !important;
+  color: $secondary-color !important;
 }
 
 .MuiSlider-thumb {
@@ -140,6 +143,13 @@ the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
   width: $sliderThumbSize * 2 !important;
   color: white;
   border-radius: 5px !important;
+  border: 1px solid black;
+}
+
+// date picker input
+.MuiInputBase-input {
+  font-size: x-large !important;
+  font-weight: bold !important;
 }
 
 table {
