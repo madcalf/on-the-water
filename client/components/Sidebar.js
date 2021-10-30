@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import CurrentArrow from './CurrentArrow';
 
 const Sidebar = () => {
   return (

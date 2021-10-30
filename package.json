@@ -17,7 +17,8 @@
   "author": "D",
   "license": "MIT",
   "engines": {
-    "node": "16.10.0"
+    "node": "16.10.0",
+    "npm": "7.24.0"
   },
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
