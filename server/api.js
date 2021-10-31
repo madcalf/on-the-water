@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const axios = require('axios');
+const createError = require('http-errors');
 module.exports = router;
 
 router.get(
@@ -13,10 +14,14 @@ router.get(
       res.json(data);
     } catch (err) {
       // report the NOAA request error, not the axios error
-      const e = new Error(
-        `Failed to get currents for station ${stationId}: ${err.response.data.error.message}`
+      const { status } = err.response;
+      const { message } = err.response.data.error;
+      next(
+        createError(
+          status,
+          `ERROR. Failed to get currents data for station ${stationId}. ${message}`
+        )
       );
-      next(e);
     }
   }
 );
@@ -33,10 +38,14 @@ router.get(
       res.json(data);
     } catch (err) {
       // report the NOAA request error, not the axios error
-      const e = new Error(
-        `Failed to get tide data for station ${stationId}: ${err.response.data.error.message}`
+      const { status } = err.response;
+      const { message } = err.response.data.error;
+      next(
+        createError(
+          status,
+          `ERROR. Failed to get tide data for station ${stationId}. ${message}`
+        )
       );
-      next(e);
     }
   }
 );

@@ -37,9 +37,9 @@ app.use('*', (req, res) => {
 
 // error handling endware
 app.use((err, req, res, next) => {
-  console.error(chalk.red(err.message));
-  if (err.status !== 404) console.error('STACK', err.stack);
-  res.status(err.status || 500).send(err.message || 'Internal server error.');
+  console.error(chalk.red(err.status, err.message));
+  res.status(err.status || 500);
+  res.json({ status: err.status, message: err.message });
 });
 
 // =============== //

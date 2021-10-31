@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import makeSvg from '../helpers/makeSvg';
 import axios from 'axios';
-import { format, closestIndexTo, parseISO } from 'date-fns';
+import { format, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 
@@ -45,42 +45,23 @@ const CurrentsMarker = ({
     iconAnchor: [16, 0],
     iconSize: L.point(32, 32),
     html: `<div class=${
-      selected ? 'selected-marker' : ''
-    } marker-container"><div style="transform: rotate(${rotation}deg) scale(${Math.abs(
+      selected ? 'marker-container selected-marker' : 'marker-container'
+    }><div style="transform: rotate(${rotation}deg) scale(${Math.abs(
       speed
     )})" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
   });
 
-  const fetchPredictionsShort = async () => {
+  const fetchPredictions = async (interval) => {
     try {
-      // if (station.id !== 'SFB1201') return; // TEMP
       const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
-      // load the display data
-      let interval = 'MAX_SLACK';
+
       const { data } = await axios.get(
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
       setPredictions(data.current_predictions.cp);
     } catch (err) {
-      console.log('Problem loading or setting currents data.', err);
-    }
-  };
-
-  const fetchPredictionsLong = async (interval) => {
-    try {
-      // if (station.id !== 'SFB1201') return; // TEMP
-      const dateStr = format(date, 'yyyyMMdd');
-      const rangeStr = `24`;
-
-      let interval = '6';
-      const { data } = await axios.get(
-        `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
-      );
-
-      setPredictionsLong(data.current_predictions.cp);
-    } catch (err) {
-      console.log('Problem loading or setting currents data', err.message);
+      console.error(err.response.data.message);
     }
   };
 
@@ -169,12 +150,12 @@ const CurrentsMarker = ({
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
     // all markers get the MAX_SLACK data for popup view
-    fetchPredictionsShort();
+    fetchPredictions('MAX_SLACK');
 
     // if it's a harmonic station, also get the detailed
     // interval data for marker rotation
     if (station.type === 'H') {
-      fetchPredictionsLong();
+      fetchPredictions('6');
     }
   }, [date]);
 
@@ -190,23 +171,25 @@ const CurrentsMarker = ({
   }, [marker]);
 
   return (
-    <Marker
-      eventHandlers={{ click: () => handleClick() }}
-      className="marker-class"
-      position={station.position}
-      icon={icon}
-    >
-      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
-        <h3 className="kp-popup-header">
-          {station.id} {title} CURRENT
-        </h3>
-        <p className="kp-popup-text">{subtitle}</p>
-        <p className="kp-popup-text">
-          {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
-        </p>
-        {currentsTable ? makeTable(currentsTable) : "Can't show the data"}
-      </Popup>
-    </Marker>
+    predictions && (
+      <Marker
+        eventHandlers={{ click: () => handleClick() }}
+        className="marker-class"
+        position={station.position}
+        icon={icon}
+      >
+        <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
+          <h3 className="kp-popup-header">
+            {station.id} {title} CURRENT
+          </h3>
+          <p className="kp-popup-text">{subtitle}</p>
+          <p className="kp-popup-text">
+            {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
+          </p>
+          {currentsTable ? makeTable(currentsTable) : "Can't show the data"}
+        </Popup>
+      </Marker>
+    )
   );
 };
 

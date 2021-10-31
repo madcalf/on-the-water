@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
 import axios from 'axios';
@@ -34,8 +34,8 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const iconUrl = Icon.Default.imagePath + 'tide_low.png';
 
   const icon = L.divIcon({
-    iconSize: [30, 30],
-    iconAnchor: [25, 0],
+    iconSize: L.point(15, 15),
+    iconAnchor: [0, 0],
     className: 'my-div-icon',
     html: `<div class=${
       selected ? 'selected-marker' : ''
@@ -53,7 +53,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
       );
       setPredictions(data.predictions);
     } catch (err) {
-      console.log('Problem loading or setting tide data', err);
+      console.error(err.response.data.message);
     }
   };
 

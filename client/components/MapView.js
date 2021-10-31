@@ -118,7 +118,7 @@ export const MapView = (props) => {
         <LayersControl.BaseLayer checked name="OpenStreetMap.Mapnik">
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
+            url=""
           />
         </LayersControl.BaseLayer>
 
