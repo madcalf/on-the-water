@@ -117,10 +117,10 @@ const CurrentsMarker = ({
   useEffect(() => {
     try {
       // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
-      let thesePredictions = predictionsLong ? predictionsLong : predictions;
-      if (thesePredictions && thesePredictions.length > 0) {
+      // let thesePredictions = predictionsLong ? predictionsLong : predictions;
+      if (predictions && predictions.length > 0) {
         // map each prediction's time to array of date objects.
-        let predictionDates = thesePredictions.map(
+        let predictionDates = predictions.map(
           (station) => new Date(station.Time)
         );
 
@@ -128,7 +128,7 @@ const CurrentsMarker = ({
         const index = closestIndexTo(adjustedDate, predictionDates);
 
         // get prediction data at that index
-        const prediction = thesePredictions[index];
+        const prediction = predictions[index];
         if (prediction) {
           // update marker direction based on this prediction
           const direction = getRotationDir(prediction);

@@ -129,23 +129,26 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   }, [marker]);
 
   return (
-    <Marker
-      eventHandlers={{ click: () => handleClick() }}
-      className="marker-class"
-      position={station.position}
-      icon={icon}
-    >
-      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
-        <h3 className="kp-popup-header">
-          {station.id} {title}
-        </h3>
-        <p className="kp-popup-text">{subtitle}</p>
-        <p className="kp-popup-text">
-          TIDE {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
-        </p>
-        {tideTable ? makeTable(tideTable) : "Can't show the data"}
-      </Popup>
-    </Marker>
+    predictions &&
+    predictions.length && (
+      <Marker
+        eventHandlers={{ click: () => handleClick() }}
+        className="marker-class"
+        position={station.position}
+        icon={icon}
+      >
+        <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
+          <h3 className="kp-popup-header">
+            {station.id} {title}
+          </h3>
+          <p className="kp-popup-text">{subtitle}</p>
+          <p className="kp-popup-text">
+            TIDE {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
+          </p>
+          {tideTable ? makeTable(tideTable) : "Can't show the data"}
+        </Popup>
+      </Marker>
+    )
   );
 };
 
