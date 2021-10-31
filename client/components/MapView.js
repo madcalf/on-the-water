@@ -84,6 +84,7 @@ export const MapView = (props) => {
     } else {
       memo.push(station.id);
       return (
+        station.type === 'R' &&
         station.id !== '' &&
         stationPos.distanceTo(L.latLng(center)) < maxDistMeters
       );

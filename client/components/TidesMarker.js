@@ -11,7 +11,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const map = useMap();
 
   // rotation of marker icon
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [rotation, setRotation] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [scale, setScale] = useState(0);
@@ -33,9 +33,16 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   Icon.Default.imagePath = 'leaflet-images/';
   const iconUrl = Icon.Default.imagePath + 'tide_low.png';
 
+  const loadingIcon = L.divIcon({
+    className: 'my-div-icon',
+    iconAnchor: [50, 50],
+    iconSize: L.point(32, 32),
+    html: `<div class="tide-marker-container loader"/>`,
+  });
+
   const icon = L.divIcon({
     iconSize: L.point(15, 15),
-    iconAnchor: [0, 0],
+    iconAnchor: [0, 15],
     className: 'my-div-icon',
     html: `<div class=${
       selected ? 'selected-marker' : ''
@@ -43,6 +50,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   });
 
   const fetchPredictions = async () => {
+    setIsLoading(true);
     try {
       const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
@@ -54,6 +62,8 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
       setPredictions(data.predictions);
     } catch (err) {
       console.error(err.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -129,26 +139,23 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   }, [marker]);
 
   return (
-    predictions &&
-    predictions.length && (
-      <Marker
-        eventHandlers={{ click: () => handleClick() }}
-        className="marker-class"
-        position={station.position}
-        icon={icon}
-      >
-        <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
-          <h3 className="kp-popup-header">
-            {station.id} {title}
-          </h3>
-          <p className="kp-popup-text">{subtitle}</p>
-          <p className="kp-popup-text">
-            TIDE {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
-          </p>
-          {tideTable ? makeTable(tideTable) : "Can't show the data"}
-        </Popup>
-      </Marker>
-    )
+    <Marker
+      eventHandlers={{ click: () => handleClick() }}
+      className="marker-class"
+      position={station.position}
+      icon={isLoading ? loadingIcon : icon}
+    >
+      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
+        <h3 className="kp-popup-header">
+          {station.id} {title}
+        </h3>
+        <p className="kp-popup-text">{subtitle}</p>
+        <p className="kp-popup-text">
+          TIDE {station.type === 'R' ? 'Harmonic' : 'Subordinate'}
+        </p>
+        {tideTable ? makeTable(tideTable) : "Can't show the data"}
+      </Popup>
+    </Marker>
   );
 };
 

@@ -4,7 +4,7 @@ import { setDate } from '../store/';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 
 const stripTimeFromDate = (date) => {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDay());
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
 const DatePicker = (props) => {

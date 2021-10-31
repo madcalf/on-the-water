@@ -3,10 +3,12 @@ $secondary-color: #61dafb;
 $sliderTrackHeight: 15px;
 $sliderThumbSize: 25px;
 $primaryTextColor: black;
+$currentsMarkerColor: orange;
+$tidesMarkerColor: cyan;
 
 * {
   box-sizing: border-box;
-  font-family: arial, sans-serif;
+  font-family: Verdana, Helvetica, Arial, sans-serif;
 }
 
 #app {
@@ -88,26 +90,6 @@ p.kp-popup-text {
   font-size: 1.2rem;
 }
 
-/* The svg and arrow styles are used to target the currents
-markers which are svg images. The classes are specified in
-the svg file(s). Not the jsx. Yeah it feels hacky, but it works.
-*/
-// #arrow {
-//   transform: rotate(180deg);
-//   transform: scale(1, 0.5);
-//   fill: none;
-// }
-
-// #arrow-fill {
-//   fill: rgb(255, 196, 0);
-// }
-
-// #arrow-border {
-//   // fill: black;
-//   stroke: black;
-//   stroke-width: 2;
-// }
-
 .overlay {
   position: fixed;
   top: 90%;
@@ -169,15 +151,29 @@ tr:nth-child(even) {
   // background-color: lightgray;
 }
 
-.current-marker-label {
+.currents-marker-container {
+  // padding: 1px;
+}
+
+.currents-marker-container path {
+  fill: $currentsMarkerColor;
+  // stroke: currentsMarkerColor;
+  // stroke-width: 1px;
+  // stroke-dasharray: 2, 2;
+  // stroke-linejoin: round;
+}
+
+.currents-marker-label {
+  color: $currentsMarkerColor;
   font-weight: bold;
   font-size: 1.4rem;
+  z-index: 300;
 }
 
 .stroke-text {
-  color: white;
+  // color: white;
   --stroke-color: black;
-  --stroke-width: 2px;
+  --stroke-width: 1.5px;
   // color: rgb(255, 196, 0);
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color),
     calc(var(--stroke-width) * -1) 0 0 var(--stroke-color),
@@ -200,15 +196,16 @@ tr:nth-child(even) {
 .tide-marker-container img {
   background-color: rgba(92, 249, 249, 0.612);
   border: 2px solid black;
-  // width: 35px;
-  // height: 35px;
+  width: 15px;
+  height: 15px;
 }
 
 .tide-marker-label {
   font-weight: bold;
   font-size: 1.4rem;
-  color: cyan;
+  color: $tidesMarkerColor;
   text-align: center;
+  z-index: 300;
 }
 
 .selected-marker {
@@ -228,6 +225,113 @@ tr:nth-child(even) {
 //   height: 50px;
 // }
 
-svg * {
-  transform-box: fill-box;
+// svg * {
+//   transform-box: fill-box;
+// }
+
+// ======= LOADING ANIMATION ======= //
+.currents-marker-container.loader {
+  color: orange;
+}
+
+.tide-marker-container.loader {
+  color: black;
+}
+
+.loader {
+  font-size: 25px;
+  text-indent: -9999em;
+  overflow: hidden;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin: 72px auto;
+  position: relative;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+  animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+}
+@-webkit-keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em,
+      -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em,
+      -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
+      -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em,
+      -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
+      -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em,
+      -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em,
+      -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em,
+      -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
+      -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em,
+      -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
+      -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em,
+      -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@-webkit-keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

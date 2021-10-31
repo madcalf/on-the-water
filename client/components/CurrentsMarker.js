@@ -17,7 +17,7 @@ const CurrentsMarker = ({
 }) => {
   const map = useMap();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [rotation, setRotation] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [scale, setScale] = useState(0);
@@ -40,18 +40,28 @@ const CurrentsMarker = ({
   const subtitle = name.join(',');
   const iconSvg = makeSvg(station.id);
 
+  const loadingIcon = L.divIcon({
+    className: 'my-div-icon',
+    iconAnchor: [32, 32],
+    iconSize: L.point(32, 32),
+    html: `<div class="currents-marker-container loader">Loading...</div>`,
+  });
+
   const icon = L.divIcon({
     className: 'my-div-icon',
     iconAnchor: [16, 0],
     iconSize: L.point(32, 32),
     html: `<div class=${
-      selected ? 'marker-container selected-marker' : 'marker-container'
+      selected
+        ? 'currents-marker-container selected-marker'
+        : 'currents-marker-container'
     }><div style="transform: rotate(${rotation}deg) scale(${Math.abs(
       speed
-    )})" transform-origin="center bottom" >${iconSvg}</div><span class="current-marker-label stroke-text">${speed}</span></div>`,
+    )})" transform-origin="center bottom" >${iconSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictions = async (interval) => {
+    setIsLoading(true);
     try {
       const dateStr = format(date, 'yyyyMMdd');
       const rangeStr = `24`;
@@ -60,6 +70,7 @@ const CurrentsMarker = ({
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
       setPredictions(data.current_predictions.cp);
+      setIsLoading(false);
     } catch (err) {
       console.error(err.response.data.message);
     }
@@ -171,12 +182,13 @@ const CurrentsMarker = ({
   }, [marker]);
 
   return (
-    predictions && (
+    predictions &&
+    predictions.length && (
       <Marker
         eventHandlers={{ click: () => handleClick() }}
         className="marker-class"
         position={station.position}
-        icon={icon}
+        icon={isLoading ? loadingIcon : icon}
       >
         <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
           <h3 className="kp-popup-header">
