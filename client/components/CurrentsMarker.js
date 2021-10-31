@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
-import makeSvg from '../helpers/makeSvg';
+import { getCurrentsIcon } from '../helpers/makeSvg';
 import axios from 'axios';
 import { format, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
@@ -38,7 +38,7 @@ const CurrentsMarker = ({
   const name = station.stationName.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
-  const iconSvg = makeSvg(station.id);
+  const currentsSvg = getCurrentsIcon(station.id);
 
   const loadingIcon = L.divIcon({
     className: 'my-div-icon',
@@ -57,7 +57,7 @@ const CurrentsMarker = ({
         : 'currents-marker-container'
     }><div style="transform: rotate(${rotation}deg) scale(${Math.abs(
       speed
-    )})" transform-origin="center bottom" >${iconSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
+    )})" transform-origin="center bottom" >${currentsSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictions = async (interval) => {
@@ -146,7 +146,6 @@ const CurrentsMarker = ({
           if (direction !== -1) {
             setRotation(direction);
             setSpeed(getSpeed(prediction));
-            setScale(getScale(prediction.Velocity_Major));
           }
         }
       }

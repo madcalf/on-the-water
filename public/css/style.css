@@ -137,6 +137,12 @@ tr:nth-child(even) {
   background-color: #efefef;
 }
 
+.poi-icon {
+  color: rgba(92, 249, 249, 0.612);
+  width: 20;
+  height: 20;
+}
+
 .currents-marker-container path {
   fill: orange;
 }
@@ -183,8 +189,8 @@ tr:nth-child(even) {
 .selected-marker img {
   background-color: cyan;
   border: 5px solid black;
-  width: 45px;
-  height: 45px;
+  width: 25px;
+  height: 25px;
 }
 
 .currents-marker-container.loader {

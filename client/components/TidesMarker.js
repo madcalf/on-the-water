@@ -12,8 +12,6 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
 
   // rotation of marker icon
   const [isLoading, setIsLoading] = useState(true);
-  const [rotation, setRotation] = useState(0);
-  const [speed, setSpeed] = useState(0);
   const [scale, setScale] = useState(0);
   const [selected, setselected] = useState(false);
   const [height, setHeight] = useState(0);

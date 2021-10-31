@@ -12,6 +12,7 @@ import {
 } from 'react-leaflet';
 import CurrentsMarker from './CurrentsMarker';
 import TidesMarker from './TidesMarker';
+import POIMarker from './POIMarker';
 import noaaCurrentsData from '../../public/data/noaa_stations_currents.json';
 import noaaTidesData from '../../public/data/noaa_stations_tides.json';
 import baskData from '../../public/data/bask_datapoints.json';
@@ -24,7 +25,7 @@ export const MapView = (props) => {
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
-    iconSize: [25, 25],
+    iconSize: [15, 15],
     iconAnchor: [13, 0],
     className: 'map-icon',
   });
@@ -34,26 +35,16 @@ export const MapView = (props) => {
 
   const maxDistMeters = 70000; //805000;
 
-  // // filter the bask data to something managable
-  // const baskCurrents = baskData.filter((station) => {
-  //   const stationPos = L.latLng(station.marker.lat, station.marker.lng);
-  //   return (
-  //     station.noaa_id !== '' &&
-  //     station.marker &&
-  //     station.station_type === 'current' &&
-  //     stationPos.distanceTo(L.latLng(center)) < maxDistMeters
-  //   );
-  // });
-
-  // const baskTides = baskData.filter((station) => {
-  //   const stationPos = L.latLng(station.marker.lat, station.marker.lng);
-  //   return (
-  //     station.noaa_id !== '' &&
-  //     station.marker &&
-  //     station.station_type === 'tide' &&
-  //     stationPos.distanceTo(L.latLng(center)) < maxDistMeters
-  //   );
-  // });
+  // filter the bask data to something managable
+  const pois = baskData.filter((station) => {
+    const stationPos = L.latLng(station.marker.lat, station.marker.lng);
+    return (
+      station.xid !== '' &&
+      station.marker &&
+      station.station_type === 'destination' &&
+      stationPos.distanceTo(L.latLng(center)) < maxDistMeters
+    );
+  });
 
   // note need to filter out the dupes try by only including
   // the first station encountered. That seems to be the
@@ -91,93 +82,47 @@ export const MapView = (props) => {
     }
   });
 
-  // console.log('noaa currents length', noaaCurrents.length, memo);
-
   console.log('BASK ALL', baskData[0].marker.lat);
   // console.log('BASK CURRENTS', baskCurrents.length);
   // console.log('BASK TIDES', baskTides.length);
   console.log('NOAA CURRENTS', noaaCurrents.length);
   console.log('NOAA TIDES', noaaTides.length);
+  console.log('BASK POIs', pois.length);
 
   return (
     <MapContainer center={center} zoom={14} scrollWheelZoom={true}>
       <LayersControl position="topright">
-        <LayersControl.BaseLayer checked name="Open Topo Map">
+        <LayersControl.BaseLayer checked name="Esri.WorldImagery">
           <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+            attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           />
         </LayersControl.BaseLayer>
 
-        <LayersControl.BaseLayer checked name="NOAA Nautical Charts">
+        <LayersControl.BaseLayer name="NOAA Nautical Charts">
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">NOAA</a> contributors'
             url="//tileservice.charts.noaa.gov/tiles/50000_1/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
 
-        <LayersControl.BaseLayer checked name="OpenStreetMap.Mapnik">
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url=""
-          />
-        </LayersControl.BaseLayer>
-
-        <LayersControl.BaseLayer checked name="OpenStreetMap.Mapnik">
+        <LayersControl.BaseLayer name="OpenStreetMap.Mapnik">
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
 
-        <LayersControl.Overlay checked name="Play Spots!">
+        <LayersControl.Overlay checked name="Points of Interest">
+          {/* POINTS OF INTEREST */}
           <LayerGroup>
-            <Marker position={[37.813769, -122.52929]} icon={icon}>
-              <Popup>
-                <h2>Pt Bonita</h2> A nice spot to play! Watch out for the big
-                waves tho...
-              </Popup>
-            </Marker>
-            <Marker position={[37.824613, -122.477839]} icon={icon}>
-              <Popup>
-                <h2>Lime Point</h2>
-                Can get some dicey swell here
-              </Popup>
-            </Marker>
-            <Marker position={[37.826149, -122.487612]} icon={icon}>
-              <Popup>
-                <h2>Kirby Rock</h2>
-                Great spot for beginner rock gardening
-              </Popup>
-            </Marker>
-            <Marker position={[37.826597, -122.490004]} icon={icon}>
-              <Popup>
-                <h2>Kirby Cove</h2>
-                Mild (mostly) beach to practice surf launches and landings
-              </Popup>
-            </Marker>
-            <Marker position={[37.833063, -122.471861]} icon={icon}>
-              <Popup>
-                <h2>Yellow Bluff</h2>
-                Wild times to be had in this bouncy tide race!
-              </Popup>
-            </Marker>
-          </LayerGroup>
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay checked name="Currents Stations (NOAA)">
-          <LayerGroup>
-            {noaaCurrents.map((station) => {
-              const data = {};
-              data.type = station.type;
-              data.position = [station.lat, station.lng];
-              data.id = station.id;
-              data.stationName = station.name;
-              return <CurrentsMarker key={data.id} station={data} />;
+            {pois.map((station) => {
+              return <POIMarker key={station.xid} station={station} />;
             })}
           </LayerGroup>
         </LayersControl.Overlay>
 
+        {/* TIDES STATIONS */}
         <LayersControl.Overlay checked name="Tide Stations (NOAA)">
           <LayerGroup>
             {noaaTides.map((station) => {
@@ -189,6 +134,20 @@ export const MapView = (props) => {
               return <TidesMarker key={data.id} station={data} />;
             })}
           </LayerGroup>
+
+          {/* CURRENTS STATIONS */}
+          <LayersControl.Overlay checked name="Currents Stations (NOAA)">
+            <LayerGroup>
+              {noaaCurrents.map((station) => {
+                const data = {};
+                data.type = station.type;
+                data.position = [station.lat, station.lng];
+                data.id = station.id;
+                data.stationName = station.name;
+                return <CurrentsMarker key={data.id} station={data} />;
+              })}
+            </LayerGroup>
+          </LayersControl.Overlay>
         </LayersControl.Overlay>
       </LayersControl>
     </MapContainer>
