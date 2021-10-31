@@ -35,7 +35,7 @@ const CurrentsMarker = ({
   const [currentsTable, setCurrentsTable] = useState(null);
 
   // set values for marker icon
-  const name = station.stationName.split(',');
+  const name = station.name.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
   const currentsSvg = getCurrentsIcon(station.id);
@@ -181,26 +181,23 @@ const CurrentsMarker = ({
   }, [marker]);
 
   return (
-    predictions &&
-    predictions.length && (
-      <Marker
-        eventHandlers={{ click: () => handleClick() }}
-        className="marker-class"
-        position={station.position}
-        icon={isLoading ? loadingIcon : icon}
-      >
-        <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
-          <h3 className="kp-popup-header">
-            {station.id} {title} CURRENT
-          </h3>
-          <p className="kp-popup-text">{subtitle}</p>
-          <p className="kp-popup-text">
-            {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
-          </p>
-          {currentsTable ? makeTable(currentsTable) : "Can't show the data"}
-        </Popup>
-      </Marker>
-    )
+    <Marker
+      eventHandlers={{ click: () => handleClick() }}
+      className="marker-class"
+      position={[station.lat, station.lng]}
+      icon={isLoading ? loadingIcon : icon}
+    >
+      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
+        <h3 className="kp-popup-header">
+          {station.id} {title} CURRENT
+        </h3>
+        <p className="kp-popup-text">{subtitle}</p>
+        <p className="kp-popup-text">
+          {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
+        </p>
+        {currentsTable ? makeTable(currentsTable) : "Can't show the data"}
+      </Popup>
+    </Marker>
   );
 };
 

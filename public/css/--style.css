@@ -150,7 +150,7 @@ tr:nth-child(even) {
 .currents-marker-label {
   color: orange;
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   z-index: 300;
 }
 
@@ -180,7 +180,7 @@ tr:nth-child(even) {
 
 .tide-marker-label {
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: cyan;
   text-align: center;
   z-index: 300;

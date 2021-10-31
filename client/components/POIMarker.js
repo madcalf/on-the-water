@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
-import { Icon } from 'leaflet';
-import { format, addMinutes, closestIndexTo } from 'date-fns';
 import { setMarker } from '../store';
 import { getPoiIcon } from '../helpers/makeSvg';
 

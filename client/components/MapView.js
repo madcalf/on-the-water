@@ -4,11 +4,9 @@ import { Icon } from 'leaflet';
 import {
   LayersControl,
   LayerGroup,
-  Circle,
   MapContainer,
   TileLayer,
-  Marker,
-  Popup,
+  useMapEvents,
 } from 'react-leaflet';
 import CurrentsMarker from './CurrentsMarker';
 import TidesMarker from './TidesMarker';
@@ -20,7 +18,25 @@ import baskData from '../../public/data/bask_datapoints.json';
 // import BuoyMarker from './BuoyMarker';
 // import noaaMet from '../../public/data/noaa_stations_met.json';
 
+function MapEventTracker() {
+  const map = useMapEvents({
+    click: () => {
+      console.log('Finding your location...');
+      map.locate();
+    },
+    locationfound: (location) => {
+      // map.flyTo(location.latlng);
+      console.log('location found:', location);
+    },
+    moveend: (args) => {
+      console.log('moveEnd', args);
+    },
+  });
+  return null;
+}
+
 export const MapView = (props) => {
+  console.log('MapView');
   Icon.Default.imagePath = 'leaflet-images/';
 
   const icon = new Icon({
@@ -82,15 +98,14 @@ export const MapView = (props) => {
     }
   });
 
-  console.log('BASK ALL', baskData[0].marker.lat);
-  // console.log('BASK CURRENTS', baskCurrents.length);
-  // console.log('BASK TIDES', baskTides.length);
+  console.log('BASK ALL', baskData.length);
   console.log('NOAA CURRENTS', noaaCurrents.length);
   console.log('NOAA TIDES', noaaTides.length);
-  console.log('BASK POIs', pois.length);
+  console.log('BASK POIs (destination)', pois.length);
 
   return (
     <MapContainer center={center} zoom={14} scrollWheelZoom={true}>
+      <MapEventTracker />
       <LayersControl position="topright">
         <LayersControl.BaseLayer checked name="Esri.WorldImagery">
           <TileLayer
@@ -126,12 +141,7 @@ export const MapView = (props) => {
         <LayersControl.Overlay checked name="Tide Stations (NOAA)">
           <LayerGroup>
             {noaaTides.map((station) => {
-              const data = {};
-              data.type = station.type;
-              data.position = [station.lat, station.lng];
-              data.id = station.id;
-              data.stationName = station.name;
-              return <TidesMarker key={data.id} station={data} />;
+              return <TidesMarker key={station.id} station={station} />;
             })}
           </LayerGroup>
 
@@ -139,12 +149,7 @@ export const MapView = (props) => {
           <LayersControl.Overlay checked name="Currents Stations (NOAA)">
             <LayerGroup>
               {noaaCurrents.map((station) => {
-                const data = {};
-                data.type = station.type;
-                data.position = [station.lat, station.lng];
-                data.id = station.id;
-                data.stationName = station.name;
-                return <CurrentsMarker key={data.id} station={data} />;
+                return <CurrentsMarker key={station.id} station={station} />;
               })}
             </LayerGroup>
           </LayersControl.Overlay>

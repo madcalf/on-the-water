@@ -24,7 +24,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const [tideTable, setTidesTable] = useState(null);
 
   // set values for marker icon
-  const name = station.stationName.split(',');
+  const name = station.name.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
 
@@ -140,7 +140,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
     <Marker
       eventHandlers={{ click: () => handleClick() }}
       className="marker-class"
-      position={station.position}
+      position={[station.lat, station.lng]}
       icon={isLoading ? loadingIcon : icon}
     >
       <Popup className="kp-popup" maxWidth={500} maxHeight={300}>

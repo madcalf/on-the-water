@@ -23,20 +23,22 @@ const DatePicker = (props) => {
   }, [selectedDate]);
 
   return (
-    <KeyboardDatePicker
-      autoOk
-      margin="normal"
-      variant="inline"
-      // showTodayButton={true}// only works on dialog variant
-      id="date-picker-keyboard"
-      label="Date"
-      format="MMMM dd yyyy"
-      value={selectedDate}
-      onChange={handleChange}
-      KeyboardButtonProps={{
-        'aria-label': 'change date',
-      }}
-    />
+    <div className="datePicker">
+      <KeyboardDatePicker
+        autoOk
+        margin="normal"
+        variant="inline"
+        // showTodayButton={true}// only works on dialog variant
+        id="date-picker-keyboard"
+        label="Date"
+        format="MMMM dd yyyy"
+        value={selectedDate}
+        onChange={handleChange}
+        KeyboardButtonProps={{
+          'aria-label': 'change date',
+        }}
+      />
+    </div>
   );
 };
 
