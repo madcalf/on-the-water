@@ -85,14 +85,19 @@ header h1 {
   border: none;
 }
 
+.legend {
+  margin-top: 70px;
+}
+
 .legendItem {
   display: flex;
-  color: #7b7b7b;
+  color: #000000;
   align-items: center;
-  align-content: flex-start;
-  margin: 0;
+  justify-items: center;
+  margin-top: 20px;
   margin-bottom: 0;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
+  width: 90%;
 }
 
 .legendItem img {
@@ -100,7 +105,8 @@ header h1 {
 }
 
 .legendItem p {
-  margin-left: 5px;
+  margin-bottom: 0;
+  margin-left: 15px;
 }
 
 // #map {

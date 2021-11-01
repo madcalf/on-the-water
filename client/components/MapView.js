@@ -37,7 +37,6 @@ function MapEventTracker() {
 }
 
 export const MapView = (props) => {
-  console.log('MapView');
   Icon.Default.imagePath = 'leaflet-images/';
 
   const icon = new Icon({

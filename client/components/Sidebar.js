@@ -10,7 +10,7 @@ import {
 import poiIcon from '../images/kayak_marker.svg';
 import hamburgerIcon from '../images/hamburger.svg';
 import currentIcon from '../images/currents_arrow.svg';
-import tideIcon from '../images/tide_low.png';
+import tideIcon from '../images/tide_low.svg';
 import mapIcon from '../images/tide_low.png';
 
 const Sidebar = () => {
@@ -61,36 +61,46 @@ const Sidebar = () => {
             <h3>A Kayak Trip Planning Tool</h3>
             <p>Or an excuse to play with maps and APIs </p>
 
-            <div className="legendItem">
-              <img src={mapIcon} alt="icon" />
-              <p>Change the basemap</p>
-            </div>
+            <ListGroup className="legend">
+              {/* <ListGroupItem className="border-0">
+                <div className="legendItem">
+                  <img src={mapIcon} alt="icon" />
+                  <p>Change the basemap</p>
+                </div>
+              </ListGroupItem> */}
 
-            <div className="legendItem">
-              <img src={poiIcon} alt="icon" />
-              <p>Launch site or landing</p>
-            </div>
-
-            <div className="legendItem">
-              <img src={currentIcon} alt="icon" />
-              <p>View full current table</p>
-            </div>
-
-            <div className="legendItem">
-              <img src={tideIcon} alt="icon" />
-              <p>View full tide table</p>
-            </div>
-
-            {/* 
-              <ListGroupItem>
-                <img src="images/kayak_marker.svg" alt="icon" />
-                Click the markers to see info about a feature
+              <ListGroupItem className="border-0">
+                <div className="legendItem">
+                  <img src={poiIcon} alt="icon" />
+                  <p>Launch site or landing</p>
+                </div>
               </ListGroupItem>
 
-              <ListGroupItem>
-                <img src="images/tide_low.png" alt="icon" />
-                Click the markers to see info about a feature
-              </ListGroupItem> */}
+              <ListGroupItem className="border-0">
+                <div className="legendItem">
+                  <img src={currentIcon} alt="icon" />
+                  <p>Current Marker</p>
+                </div>
+              </ListGroupItem>
+
+              <ListGroupItem className="border-0">
+                <div className="legendItem">
+                  <img src={tideIcon} alt="icon" />
+                  <p>Tide Marker</p>
+                </div>
+              </ListGroupItem>
+
+              <ListGroupItem className="border-0">
+                <p>
+                  Use the date selector and time slider to view tides and
+                  currents at the desired time
+                </p>
+              </ListGroupItem>
+
+              <ListGroupItem className="border-0">
+                <p>Click any marker to view more details</p>
+              </ListGroupItem>
+            </ListGroup>
           </Card.Body>
         </Card>
       </Offcanvas>
