@@ -51,6 +51,7 @@ const Sidebar = () => {
         className="sidebar p-3 text-center"
         show={show}
         onHide={handleClose}
+        backdrop={false}
       >
         <Offcanvas.Header closeButton>
           <h1>On the Water</h1>

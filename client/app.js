@@ -10,9 +10,9 @@ import './app.scss';
 const App = () => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Container fluid>
-        <Row>
-          <Col className="d-flex justify-content-center position-relative">
+      <Container fluid className="p-0">
+        <Row className="m-0">
+          <Col className="d-flex p-0 justify-content-center position-relative">
             <Sidebar />
             <MapView />
             <UIOverlay />
