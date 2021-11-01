@@ -40,6 +40,25 @@ header h1 {
   // font-size: 1.5rem;
 }
 
+.hamburger {
+  background-color: red;
+  position: absolute;
+  top: 0;
+  left: 50px;
+  margin: 10px;
+  z-index: 500;
+}
+
+@media (min-width: 574px) {
+  .hamburger {
+    background-color: green;
+  }
+
+  // .sidebar {
+  //   padding: 10;
+  // }
+}
+
 .sidebar {
   color: $primaryTextColor;
   // width: 25%;
@@ -59,8 +78,10 @@ header h1 {
 // .card {
 //   background-color: red;
 //   max-width: 600px;
+//   min-width: 44;
 //   justify-content: center;
 // }
+
 // #map {
 //   border: 1px solid black;
 //   width: 90%;
@@ -99,10 +120,9 @@ p.kp-popup-text {
 }
 
 .overlay {
-  position: fixed;
-  top: 70%;
-  width: 100%;
-  height: 10%;
+  // top: 70%;
+  // width: 100%;
+  // height: 10%;
   background-color: rgba(92, 249, 249, 0.2);
   z-index: 500;
 }

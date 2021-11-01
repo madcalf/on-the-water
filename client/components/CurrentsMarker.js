@@ -128,7 +128,6 @@ const CurrentsMarker = ({
   useEffect(() => {
     try {
       // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
-      // let thesePredictions = predictionsLong ? predictionsLong : predictions;
       if (predictions && predictions.length > 0) {
         // map each prediction's time to array of date objects.
         let predictionDates = predictions.map(

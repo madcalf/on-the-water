@@ -11142,6 +11142,20 @@ header {
   z-index: 500;
 }
 
+.hamburger {
+  background-color: red;
+  position: absolute;
+  top: 0;
+  left: 50px;
+  margin: 10px;
+  z-index: 500;
+}
+
+@media (min-width: 574px) {
+  .hamburger {
+    background-color: green;
+  }
+}
 .sidebar {
   color: black;
   height: 100%;
@@ -11182,10 +11196,6 @@ p.kp-popup-text {
 }
 
 .overlay {
-  position: fixed;
-  top: 70%;
-  width: 100%;
-  height: 10%;
   background-color: rgba(92, 249, 249, 0.2);
   z-index: 500;
 }

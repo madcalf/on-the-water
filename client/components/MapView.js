@@ -7,6 +7,7 @@ import {
   MapContainer,
   TileLayer,
   useMapEvents,
+  ZoomControl,
 } from 'react-leaflet';
 import CurrentsMarker from './CurrentsMarker';
 import TidesMarker from './TidesMarker';
@@ -104,8 +105,14 @@ export const MapView = (props) => {
   console.log('BASK POIs (destination)', pois.length);
 
   return (
-    <MapContainer center={center} zoom={14} scrollWheelZoom={true}>
+    <MapContainer
+      center={center}
+      zoom={14}
+      scrollWheelZoom={true}
+      zoomControl={false}
+    >
       <MapEventTracker />
+      <ZoomControl position="bottomright" />
       <LayersControl position="topright">
         <LayersControl.BaseLayer checked name="Esri.WorldImagery">
           <TileLayer

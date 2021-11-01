@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 // import Grid from '@material-ui/core/Grid';
 import TimeSlider from './TimeSlider';
 import DatePicker from './DatePicker';
-import { Stack, Card } from 'react-bootstrap';
+import { Stack, Card, Button, Badge } from 'react-bootstrap';
 
 const UIOverlay = (props) => {
   useEffect(() => {});
 
   return (
-    <div className="overlay">
-      <Card>
-        <DatePicker />
-        <TimeSlider />
-      </Card>
-    </div>
+    <Card className="overlay flex-row position-absolute bottom-0">
+      <DatePicker />
+      <TimeSlider />
+    </Card>
   );
 };
 
