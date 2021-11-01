@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
-import { getCurrentsIcon } from '../helpers/makeSvg';
+import { getCurrentsIcon } from '../helpers/getSvg';
 import axios from 'axios';
 import { format, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';

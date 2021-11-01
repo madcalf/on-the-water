@@ -28,8 +28,8 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const title = name.shift();
   const subtitle = name.join(',');
 
-  Icon.Default.imagePath = 'leaflet-images/';
-  const iconUrl = Icon.Default.imagePath + 'tide_low.png';
+  // Icon.Default.imagePath = 'leaflet-images/';
+  const iconUrl = 'images/tide_low.png';
 
   const loadingIcon = L.divIcon({
     className: 'my-div-icon',

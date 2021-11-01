@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import { setMarker } from '../store';
-import { getPoiIcon } from '../helpers/makeSvg';
+import { getPoiIcon } from '../helpers/getSvg';
 
 const POIMarker = ({ station, marker, selectMarker }) => {
   const map = useMap();
