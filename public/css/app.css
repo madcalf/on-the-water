@@ -11172,7 +11172,7 @@ header {
   text-align: left;
 }
 
-.card {
+.sidebar .card {
   border: none;
 }
 
@@ -11216,7 +11216,7 @@ wonky without it. */
   background-color: white;
 }
 
-p.kp-popup-text {
+.kp-popup-text {
   margin-top: 0;
   margin-bottom: 0;
   font-size: 1.2rem;
@@ -11228,14 +11228,31 @@ p.kp-popup-text {
 }
 
 .overlay {
-  background-color: rgba(92, 249, 249, 0.2);
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  background-color: rgba(0, 0, 0, 0);
   z-index: 500;
 }
 
-.sliderContainer {
-  width: 90%;
-  margin-top: 50px;
-  height: 100px;
+.overlay .card {
+  border: 2px solid black;
+}
+
+.timeSlider {
+  background-color: rgba(200, 200, 200, 0.6);
+  padding: 0 20px;
+  text-align: center;
+  width: 330px;
+}
+
+.timeSliderHeader {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
 }
 
 .MuiSlider-track {
@@ -11253,12 +11270,24 @@ p.kp-popup-text {
   color: #61dafb !important;
 }
 
+.MuiSlider-markActive {
+  height: 15px !important;
+  background-color: #61dafb !important;
+  opacity: 1;
+}
+
 .MuiSlider-thumb {
   height: 25px !important;
   width: 50px !important;
   color: white;
   border-radius: 5px !important;
   border: 1px solid black;
+}
+
+.datePicker {
+  background-color: rgba(200, 200, 200, 0.6);
+  padding: 0 20px;
+  width: 330px;
 }
 
 .MuiInputBase-input {
@@ -11303,12 +11332,6 @@ tr:nth-child(even) {
   --stroke-color: black;
   --stroke-width: 1.5px;
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color), calc(var(--stroke-width) * -1) 0 0 var(--stroke-color), 0 var(--stroke-width) 0 var(--stroke-color), 0 calc(var(--stroke-width) * -1) 0 var(--stroke-color);
-}
-
-.time-slider-header {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
 }
 
 .marker-container {

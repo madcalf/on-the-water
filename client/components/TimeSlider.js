@@ -31,9 +31,9 @@ export function TimeSlider({ date, adjustedDate, setAdjustedDate }) {
   }, [currentValue]);
 
   return (
-    <div className={classes.root}>
+    <div className="timeSlider">
       <Typography id="discrete-slider-small-steps" gutterBottom>
-        <span className="time-slider-header">
+        <span className="timeSliderHeader">
           {format(currentValue, 'h:mm aaa')}
         </span>
       </Typography>

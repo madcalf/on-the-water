@@ -8,7 +8,7 @@ const UIOverlay = (props) => {
   useEffect(() => {});
 
   return (
-    <Card className="overlay flex-row position-absolute bottom-0">
+    <Card className="overlay flex-row">
       <DatePicker />
       <TimeSlider />
     </Card>
