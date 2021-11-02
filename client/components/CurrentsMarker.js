@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Marker, Popup, useMap } from 'react-leaflet';
+import { Marker, Popup, useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import { getCurrentsIcon } from '../helpers/getSvg';
 import axios from 'axios';
@@ -15,12 +15,10 @@ const CurrentsMarker = ({
   marker,
   selectMarker,
 }) => {
-  const map = useMap();
-
   const [isLoading, setIsLoading] = useState(true);
-  const [rotation, setRotation] = useState(0);
-  const [speed, setSpeed] = useState(0);
-  const [scale, setScale] = useState(0);
+  const [rotation, setRotation] = useState(-999);
+  const [speed, setSpeed] = useState(-0);
+  const [scale, setScale] = useState(-1);
   const [selected, setselected] = useState(false);
 
   // json prediction data on MAX/SLACK interval.
@@ -38,8 +36,8 @@ const CurrentsMarker = ({
   const name = station.name.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
-  const currentsSvg = getCurrentsIcon(station.id);
 
+  const currentsSvg = getCurrentsIcon(station.id);
   const loadingIcon = L.divIcon({
     className: 'my-div-icon',
     iconAnchor: [32, 32],
@@ -69,7 +67,11 @@ const CurrentsMarker = ({
       const { data } = await axios.get(
         `/api/currents/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
-      setPredictions(data.current_predictions.cp);
+      if (interval === 'MAX_SLACK') {
+        setPredictions(data.current_predictions.cp);
+      } else {
+        setPredictionsLong(data.current_predictions.cp);
+      }
       setIsLoading(false);
     } catch (err) {
       console.error(err.response.data.message);
@@ -128,26 +130,28 @@ const CurrentsMarker = ({
   useEffect(() => {
     try {
       // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
-      if (predictions && predictions.length > 0) {
-        // map each prediction's time to array of date objects.
-        let predictionDates = predictions.map(
-          (station) => new Date(station.Time)
-        );
+      const thesePredictions = predictionsLong ? predictionsLong : predictions;
+      if (!predictionsLong)
+        if (thesePredictions && thesePredictions.length > 0) {
+          // map each prediction's time to array of date objects.
+          let predictionDates = thesePredictions.map(
+            (station) => new Date(station.Time)
+          );
 
-        // find closest time in predictions to the selected time
-        const index = closestIndexTo(adjustedDate, predictionDates);
+          // find closest time in predictions to the selected time
+          const index = closestIndexTo(adjustedDate, predictionDates);
 
-        // get prediction data at that index
-        const prediction = predictions[index];
-        if (prediction) {
-          // update marker direction based on this prediction
-          const direction = getRotationDir(prediction);
-          if (direction !== -1) {
-            setRotation(direction);
-            setSpeed(getSpeed(prediction));
+          // get prediction data at that index
+          const prediction = thesePredictions[index];
+          if (prediction) {
+            // update marker direction based on this prediction
+            const direction = getRotationDir(prediction);
+            if (direction !== -1) {
+              setRotation(direction);
+              setSpeed(getSpeed(prediction));
+            }
           }
         }
-      }
     } catch (err) {
       console.error(
         `ERROR ${station.id} ${station.type} has no data or Velocity_Major??`,
@@ -171,7 +175,7 @@ const CurrentsMarker = ({
   // update the currents table when new predictions data is loaded
   useEffect(() => {
     if (predictions) {
-      setCurrentsTable(predictions);
+      setCurrentsTable(makeTable(predictions));
     }
   }, [predictions]);
 
@@ -194,7 +198,7 @@ const CurrentsMarker = ({
         <p className="kp-popup-text">
           {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
         </p>
-        {currentsTable ? makeTable(currentsTable) : "Can't show the data"}
+        {currentsTable ? currentsTable : "Can't show the data"}
       </Popup>
     </Marker>
   );

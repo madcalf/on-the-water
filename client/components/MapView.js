@@ -37,6 +37,7 @@ function MapEventTracker() {
 }
 
 export const MapView = (props) => {
+  console.log('MapView render');
   Icon.Default.imagePath = 'leaflet-images/';
 
   const icon = new Icon({
@@ -110,9 +111,9 @@ export const MapView = (props) => {
       scrollWheelZoom={true}
       zoomControl={false}
     >
-      <MapEventTracker />
+      {/* <MapEventTracker /> */}
       <ZoomControl position="bottomright" />
-      <LayersControl position="topright">
+      <LayersControl position="bottomright">
         <LayersControl.BaseLayer checked name="Esri.WorldImagery">
           <TileLayer
             attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"

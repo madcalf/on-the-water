@@ -30,7 +30,7 @@ const Sidebar = () => {
         <Card>
           <Card.Body>
             <h3>A Kayak Trip Planning Tool</h3>
-            <p>Really just an excuse to play with maps and APIs </p>
+            <p>Really an excuse to learn maps and API stuff...</p>
 
             <ListGroup className="legend">
               <ListGroupItem className="border-0">
@@ -67,7 +67,10 @@ const Sidebar = () => {
             </ListGroup>
           </Card.Body>
           <Card.Footer className="text-muted">
-            <p>Inspired by the following super cool sites:</p>
+            <p>
+              Inspired by the following super cool sites that do these things
+              way better:
+            </p>
             <p>
               <a href="http://bask.org/TripPlanner">BASK Trip Planner</a>
             </p>
