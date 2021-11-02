@@ -11176,6 +11176,10 @@ header {
   border: none;
 }
 
+.sidebar .card-footer {
+  font-size: 0.9rem;
+}
+
 .legend {
   margin-top: 70px;
 }
@@ -11189,6 +11193,11 @@ header {
   margin-bottom: 0;
   font-size: 1.1rem;
   width: 90%;
+}
+
+.legendItem.tide img {
+  border: 1px solid black;
+  background-color: cyan;
 }
 
 .legendItem img {
@@ -11219,7 +11228,7 @@ wonky without it. */
 .kp-popup-text {
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .kp-popup-header {
@@ -11334,14 +11343,9 @@ tr:nth-child(even) {
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color), calc(var(--stroke-width) * -1) 0 0 var(--stroke-color), 0 var(--stroke-width) 0 var(--stroke-color), 0 calc(var(--stroke-width) * -1) 0 var(--stroke-color);
 }
 
-.marker-container {
-  border: none;
-  background-color: none;
-}
-
-.tide-marker-container img {
-  background-color: rgba(92, 249, 249, 0.612);
+.tide-marker-container svg {
   border: 2px solid black;
+  background-color: cyan;
   width: 15px;
   height: 15px;
 }
@@ -11354,8 +11358,7 @@ tr:nth-child(even) {
   z-index: 300;
 }
 
-.selected-marker img {
-  background-color: cyan;
+.selected-marker {
   border: 5px solid black;
   width: 25px;
   height: 25px;

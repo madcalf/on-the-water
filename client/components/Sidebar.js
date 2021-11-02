@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  Image,
-  Offcanvas,
-  Stack,
-  ListGroupItem,
-  ListGroup,
-} from 'react-bootstrap';
+import { Card, Offcanvas, ListGroupItem, ListGroup } from 'react-bootstrap';
 import poiIcon from '../images/kayak_marker.svg';
 import hamburgerIcon from '../images/hamburger.svg';
 import currentIcon from '../images/currents_arrow.svg';
 import tideIcon from '../images/tide_low.svg';
-import mapIcon from '../images/tide_low.png';
 
 const Sidebar = () => {
   const [show, setShow] = useState(true);
@@ -19,33 +11,11 @@ const Sidebar = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // const hamburgerIcon = (
-  //   <svg
-  //     xmlns="http://www.w3.org/2000/svg"
-  //     viewBox="0 0 30 30"
-  //     width="30"
-  //     height="30"
-  //     focusable="false"
-  //   >
-  //     <title>Menu</title>
-  //     <path
-  //       stroke="currentColor"
-  //       strokeWidth="2"
-  //       strokeLinecap="round"
-  //       strokeMiterlimit="10"
-  //       d="M4 7h22M4 15h22M4 23h22"
-  //     />
-  //   </svg>
-  // );
-
   return (
     <>
       <div className="hamburger" onClick={handleShow}>
         <img src={hamburgerIcon} alt="" />
       </div>
-      {/* <div className="hamburger" onClick={handleShow}>
-        {hamburgerIcon}
-      </div> */}
 
       <Offcanvas
         className="sidebar p-3 text-center"
@@ -60,32 +30,25 @@ const Sidebar = () => {
         <Card>
           <Card.Body>
             <h3>A Kayak Trip Planning Tool</h3>
-            <p>Or an excuse to play with maps and APIs </p>
+            <p>Really just an excuse to play with maps and APIs </p>
 
             <ListGroup className="legend">
-              {/* <ListGroupItem className="border-0">
-                <div className="legendItem">
-                  <img src={mapIcon} alt="icon" />
-                  <p>Change the basemap</p>
-                </div>
-              </ListGroupItem> */}
-
               <ListGroupItem className="border-0">
-                <div className="legendItem">
+                <div className="legendItem poi">
                   <img src={poiIcon} alt="icon" />
                   <p>Launch site or landing</p>
                 </div>
               </ListGroupItem>
 
               <ListGroupItem className="border-0">
-                <div className="legendItem">
+                <div className="legendItem current">
                   <img src={currentIcon} alt="icon" />
                   <p>Current Marker</p>
                 </div>
               </ListGroupItem>
 
               <ListGroupItem className="border-0">
-                <div className="legendItem">
+                <div className="legendItem tide">
                   <img src={tideIcon} alt="icon" />
                   <p>Tide Marker</p>
                 </div>
@@ -103,6 +66,15 @@ const Sidebar = () => {
               </ListGroupItem>
             </ListGroup>
           </Card.Body>
+          <Card.Footer className="text-muted">
+            <p>Inspired by the following super cool sites:</p>
+            <p>
+              <a href="http://bask.org/TripPlanner">BASK Trip Planner</a>
+            </p>
+            <p>
+              <a href="http://deepzoom.com">Deep Zoom</a>
+            </p>
+          </Card.Footer>
         </Card>
       </Offcanvas>
     </>

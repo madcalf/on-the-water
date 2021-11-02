@@ -11,13 +11,12 @@ const POIMarker = ({ station, marker, selectMarker }) => {
 
   // for some reason some city names have underscores in them
   const city = station.city.replace('_', ' ');
-  const poiIcon = getPoiIcon();
 
   const icon = L.divIcon({
     className: 'my-div-icon',
     iconAnchor: [32, 32],
     iconSize: L.point(32, 32),
-    html: `<div class="poi-icon">${poiIcon}</div>`,
+    html: `<div class="poi-icon">${getPoiIcon()}</div>`,
   });
 
   const handleClick = () => {

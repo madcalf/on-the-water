@@ -6,6 +6,7 @@ import { Icon } from 'leaflet';
 import axios from 'axios';
 import { format, addMinutes, closestIndexTo } from 'date-fns';
 import { setMarker } from '../store';
+import { getTidesIcon } from '../helpers/getSvg';
 
 const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const map = useMap();
@@ -28,7 +29,6 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const title = name.shift();
   const subtitle = name.join(',');
 
-  // Icon.Default.imagePath = 'leaflet-images/';
   const iconUrl = 'images/tide_low.png';
 
   const loadingIcon = L.divIcon({
@@ -44,7 +44,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
     className: 'my-div-icon',
     html: `<div class=${
       selected ? 'selected-marker' : ''
-    } "tide-marker-container"><img src='${iconUrl}' alt='tide-marker' /><span class="tide-marker-label stroke-text">${height}</span></div>`,
+    } "tide-marker-container">${getTidesIcon()}<span class="tide-marker-label stroke-text">${height}</span></div>`,
   });
 
   const fetchPredictions = async () => {
