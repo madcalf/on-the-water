@@ -1,26 +1,22 @@
 import { closestIndexTo } from 'date-fns';
 
-export const getCurrentDisplayValues = (predictions, timestamp) => {
+export const getClosestCurrentPrediction = (predictions, date) => {
   let predictionDates = predictions.map(
     (prediction) => new Date(prediction.Time)
   );
-  const index = closestIndexTo(timestamp, predictionDates);
+  const index = closestIndexTo(date, predictionDates);
+  return predictions[index];
+};
 
-  const prediction = predictions[index];
+export const getCurrentDisplayValues = (predictions, date) => {
+  const prediction = getClosestCurrentPrediction(predictions, date);
   const data = {};
   data.rotation = getCurrentRotation(prediction);
-  data.speed = getCurrentSpeed(prediction);
+  data.speed = prediction.Velocity_Major;
   data.scale = Math.abs(data.speed);
   return data;
 };
 
-export const getCurrentSpeed = (prediction) => {
-  const speed = prediction.Velocity_Major;
-  return Number.parseFloat(speed).toPrecision(2);
-};
-
-// Getting the direction for rotation based on
-// Velocity_Major.
 export const getCurrentRotation = (prediction) => {
   if (prediction.Velocity_Major > 0.2) {
     return prediction.meanFloodDir;
@@ -31,4 +27,14 @@ export const getCurrentRotation = (prediction) => {
     // return error code and deal with it at the call site
     return -1;
   }
+};
+
+export const getClosestTidePrediction = (predictions, date) => {
+  let predictionDates = predictions.map((prediction) => new Date(prediction.t));
+  const index = closestIndexTo(date, predictionDates);
+  return predictions[index];
+};
+export const getTideDisplayValue = (predictions, date) => {
+  const prediction = getClosestTidePrediction(predictions, date);
+  return prediction.v;
 };

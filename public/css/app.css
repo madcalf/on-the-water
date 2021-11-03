@@ -11249,7 +11249,7 @@ wonky without it. */
 
 .timeSlider {
   background-color: rgba(200, 200, 200, 0.6);
-  padding: 0 20px;
+  padding: 0 50px;
   text-align: center;
   width: 330px;
 }
@@ -11355,6 +11355,7 @@ tr:nth-child(even) {
 }
 
 .selected-marker {
+  background-color: cyan;
   border: 5px solid black;
   width: 25px;
   height: 25px;

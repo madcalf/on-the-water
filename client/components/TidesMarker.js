@@ -7,6 +7,10 @@ import axios from 'axios';
 import { format, addMinutes, closestIndexTo } from 'date-fns';
 import { setMarker } from '../store';
 import { getTidesIcon } from '../helpers/getSvg';
+import {
+  getTideDisplayValue,
+  getClosestTidePrediction,
+} from '../helpers/markers';
 
 const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const map = useMap();
@@ -97,20 +101,14 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
 
   useEffect(() => {
     try {
-      if (predictions && predictions.length > 0) {
-        // map each prediction's time to array of date objects.
-        let predictionTimes = predictions.map((station) => new Date(station.t));
+      if (predictions?.length > 0) {
+        let predictionTimes = predictions.map(
+          (prediction) => new Date(prediction.t)
+        );
 
-        // find closest time in predictions to the selected time
-        const index = closestIndexTo(adjustedDate, predictionTimes);
-
-        // get prediction data at that index
-        const prediction = predictions[index];
-        if (prediction) {
-          // update marker height based on this prediction
-          const height = prediction.v;
-          setHeight(height);
-        }
+        const height = getTideDisplayValue(predictions, adjustedDate);
+        setHeight(height);
+        console.log(station.id, 'tide value:', height);
       }
     } catch (err) {
       console.error(

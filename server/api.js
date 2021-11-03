@@ -9,6 +9,7 @@ router.get(
     const { stationId, dateStr, rangeStr, interval } = req.params;
     const requestUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${dateStr}&range=${rangeStr}&station=${stationId}&product=currents_predictions&time_zone=lst_ldt&interval=${interval}&units=english&format=json`;
 
+    if (stationId === 'SFB1201') console.log(requestUrl);
     try {
       const { data } = await axios.get(requestUrl);
       res.json(data);

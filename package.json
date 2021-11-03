@@ -10,8 +10,8 @@
     "start:dev": "npm run build:dev & nodemon server/app.js & npm run sass",
     "start:dev:logger": "LOGGING=true npm run start:dev",
     "sass": "sass client:public/css --watch --no-source-map",
-    "test": "jest",
-    "test:dev": "jest -o --watch"
+    "test": "jest --verbose",
+    "test:dev": "npm run test -- --watch"
   },
   "author": "D",
   "license": "MIT",
@@ -22,6 +22,9 @@
   "jest": {
     "verbose": true,
     "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
+    ],
     "modulePaths": [
       "/shared/vendor/modules"
     ],
@@ -67,6 +70,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.12.10",
     "@babel/register": "^7.12.10",
+    "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "axios-mock-adapter": "^1.16.0",
     "babel-jest": "^27.3.1",

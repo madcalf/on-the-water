@@ -8,7 +8,7 @@ import { format, addMinutes } from 'date-fns';
 
 const useStyles = makeStyles({
   root: {
-    width: 300,
+    width: 200,
   },
 });
 

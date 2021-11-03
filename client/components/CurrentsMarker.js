@@ -126,12 +126,17 @@ const CurrentsMarker = ({
 
   useEffect(() => {
     try {
-      const thesePredictions = predictionsLong || predictions;
-
+      const thesePredictions = predictionsLong ? predictionsLong : predictions;
       if (thesePredictions?.length > 0) {
         const { speed, rotation, scale } = getCurrentDisplayValues(
           thesePredictions,
           adjustedDate
+        );
+
+        console.log(
+          station.id,
+          'current values',
+          getCurrentDisplayValues(predictions, adjustedDate)
         );
         setSpeed(speed);
         setScale(scale);
@@ -170,21 +175,6 @@ const CurrentsMarker = ({
   useEffect(() => {
     setselected(marker === station.id);
   }, [marker]);
-
-  // // ======= TEMP ======= //
-  // useEffect(() => {
-  //   if (station.id === 'SFB1203') {
-  //     console.log(`CurrentMarker ${station.id} mount, isLoading:${isLoading}`);
-  //   }
-  // }, []);
-  // useEffect(() => {
-  //   if (station.id === 'SFB1203') {
-  //     console.count(
-  //       `CurrentMarker ${station.id} render, isLoading:${isLoading}`
-  //     );
-  //   }
-  // });
-  // // ======= END TEMP ======= //
 
   return (
     <Marker

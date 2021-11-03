@@ -106,7 +106,7 @@ header h1 {
 
 .legendItem.tide img {
   border: 1px solid black;
-  background-color: cyan;
+  background-color: $tidesMarkerColor;
 }
 
 .legendItem img {
@@ -165,7 +165,7 @@ wonky without it. */
 
 .timeSlider {
   background-color: $overlayBackgroundColor;
-  padding: 0 20px;
+  padding: 0 50px;
   text-align: center;
   width: 330px;
   // border: 1px solid black;
@@ -268,7 +268,7 @@ tr:nth-child(even) {
 
 .tide-marker-container svg {
   border: 2px solid black;
-  background-color: cyan;
+  background-color: $tidesMarkerColor;
   width: 15px;
   height: 15px;
 }
@@ -282,7 +282,7 @@ tr:nth-child(even) {
 }
 
 .selected-marker {
-  // background-color: cyan;
+  background-color: $tidesMarkerColor;
   border: 5px solid black;
   width: 25px;
   height: 25px;
