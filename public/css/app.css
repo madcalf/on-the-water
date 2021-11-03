@@ -11180,10 +11180,6 @@ header {
   font-size: 0.9rem;
 }
 
-.legend {
-  margin-top: 70px;
-}
-
 .legendItem {
   display: flex;
   color: #000000;

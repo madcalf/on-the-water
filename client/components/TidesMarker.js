@@ -136,6 +136,19 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
     setselected(marker === station.id);
   }, [marker]);
 
+  // ======= TEMP ======= //
+  useEffect(() => {
+    if (station.id === 'SFB1203') {
+      console.log(`CurrentMarker ${station.id} mount`);
+    }
+  }, []);
+  useEffect(() => {
+    if (station.id === 'SFB1203') {
+      console.count(`CurrentMarker ${station.id} render`);
+    }
+  });
+  // ======= END TEMP ======= //
+
   return (
     <Marker
       eventHandlers={{ click: () => handleClick() }}

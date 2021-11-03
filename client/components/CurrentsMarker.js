@@ -7,6 +7,7 @@ import axios from 'axios';
 import { format, closestIndexTo } from 'date-fns';
 import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
+import { getCurrentDisplayValues } from '../helpers/markers';
 
 const CurrentsMarker = ({
   station,
@@ -53,9 +54,7 @@ const CurrentsMarker = ({
       selected
         ? 'currents-marker-container selected-marker'
         : 'currents-marker-container'
-    }><div style="transform: rotate(${rotation}deg) scale(${Math.abs(
-      speed
-    )})" transform-origin="center bottom" >${currentsSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
+    }><div style="transform: rotate(${rotation}deg) scale(${scale})" transform-origin="center bottom" >${currentsSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictions = async (interval) => {
@@ -125,36 +124,25 @@ const CurrentsMarker = ({
     return prediction.Velocity_Major;
   };
 
-  const getScale = scaleLinear().domain([0, 3]).range([0, 1.0]);
-
   useEffect(() => {
     try {
-      // if we have the 6 minute intervals use those, otherwise use the MAX_SLACK
-      const thesePredictions = predictionsLong ? predictionsLong : predictions;
-      if (!predictionsLong)
-        if (thesePredictions && thesePredictions.length > 0) {
-          // map each prediction's time to array of date objects.
-          let predictionDates = thesePredictions.map(
-            (station) => new Date(station.Time)
-          );
+      const thesePredictions = predictionsLong || predictions;
 
-          // find closest time in predictions to the selected time
-          const index = closestIndexTo(adjustedDate, predictionDates);
-
-          // get prediction data at that index
-          const prediction = thesePredictions[index];
-          if (prediction) {
-            // update marker direction based on this prediction
-            const direction = getRotationDir(prediction);
-            if (direction !== -1) {
-              setRotation(direction);
-              setSpeed(getSpeed(prediction));
-            }
-          }
+      if (thesePredictions?.length > 0) {
+        const { speed, rotation, scale } = getCurrentDisplayValues(
+          thesePredictions,
+          adjustedDate
+        );
+        setSpeed(speed);
+        setScale(scale);
+        // -1 means we're at slack tide
+        if (rotation > -1) {
+          setRotation(rotation);
         }
+      }
     } catch (err) {
       console.error(
-        `ERROR ${station.id} ${station.type} has no data or Velocity_Major??`,
+        `Problem getting display data for ${station.id} (${station.type}) `,
         err
       );
     }
@@ -183,10 +171,24 @@ const CurrentsMarker = ({
     setselected(marker === station.id);
   }, [marker]);
 
+  // // ======= TEMP ======= //
+  // useEffect(() => {
+  //   if (station.id === 'SFB1203') {
+  //     console.log(`CurrentMarker ${station.id} mount, isLoading:${isLoading}`);
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   if (station.id === 'SFB1203') {
+  //     console.count(
+  //       `CurrentMarker ${station.id} render, isLoading:${isLoading}`
+  //     );
+  //   }
+  // });
+  // // ======= END TEMP ======= //
+
   return (
     <Marker
       eventHandlers={{ click: () => handleClick() }}
-      className="marker-class"
       position={[station.lat, station.lng]}
       icon={isLoading ? loadingIcon : icon}
     >

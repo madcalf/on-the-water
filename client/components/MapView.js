@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as L from 'leaflet';
 import { Icon } from 'leaflet';
 import {
@@ -37,8 +37,15 @@ function MapEventTracker() {
 }
 
 export const MapView = (props) => {
-  console.log('MapView render');
   Icon.Default.imagePath = 'leaflet-images/';
+
+  // TEMP
+  useEffect(() => {
+    console.log('MapView Mount');
+  }, []);
+  useEffect(() => {
+    console.log('MapView Render');
+  });
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',

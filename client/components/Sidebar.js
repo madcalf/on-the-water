@@ -18,10 +18,11 @@ const Sidebar = () => {
       </div>
 
       <Offcanvas
-        className="sidebar p-3 text-center"
+        className={`sidebar p-3 text-center data-disableScrolling="false"`}
         show={show}
         onHide={handleClose}
         backdrop={false}
+        scroll={true}
       >
         <Offcanvas.Header closeButton>
           <h1>On the Water</h1>
