@@ -106,3 +106,11 @@ describe('Current Markers process API data correctly', () => {
     expect(scale).toBeCloseTo(2.7);
   });
 });
+
+// describe('Dont display Markers for faulty stations'), () => {
+//   it('...', () => {
+//     render (
+//       <CurrentsMarker >
+//     )
+//   })
+// }

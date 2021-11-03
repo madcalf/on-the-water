@@ -39,7 +39,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
     className: 'my-div-icon',
     iconAnchor: [50, 50],
     iconSize: L.point(32, 32),
-    html: `<div class="tide-marker-container loader"/>`,
+    html: `<div class="tide-marker-icon loader"/>`,
   });
 
   const icon = L.divIcon({
@@ -48,7 +48,7 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
     className: 'my-div-icon',
     html: `<div class=${
       selected ? 'selected-marker' : ''
-    } "tide-marker-container">${getTidesIcon()}<span class="tide-marker-label stroke-text">${height}</span></div>`,
+    } "tide-marker-icon">${getTidesIcon()}<span class="tide-marker-label stroke-text">${height}</span></div>`,
   });
 
   const fetchPredictions = async () => {

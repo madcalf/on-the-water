@@ -22,12 +22,12 @@ import baskData from '../../public/data/bask_datapoints.json';
 function MapEventTracker() {
   const map = useMapEvents({
     click: () => {
-      console.log('Finding your location...');
+      // console.log('Finding your location...');
       map.locate();
     },
     locationfound: (location) => {
       // map.flyTo(location.latlng);
-      console.log('location found:', location);
+      // console.log('location found:', location);
     },
     moveend: (args) => {
       console.log('moveEnd', args);
@@ -38,14 +38,6 @@ function MapEventTracker() {
 
 export const MapView = (props) => {
   Icon.Default.imagePath = 'leaflet-images/';
-
-  // TEMP
-  useEffect(() => {
-    console.log('MapView Mount');
-  }, []);
-  useEffect(() => {
-    console.log('MapView Render');
-  });
 
   const icon = new Icon({
     iconUrl: Icon.Default.imagePath + 'kayak_marker.png',
@@ -105,11 +97,6 @@ export const MapView = (props) => {
       );
     }
   });
-
-  console.log('BASK ALL', baskData.length);
-  console.log('NOAA CURRENTS', noaaCurrents.length);
-  console.log('NOAA TIDES', noaaTides.length);
-  console.log('BASK POIs (destination)', pois.length);
 
   return (
     <MapContainer

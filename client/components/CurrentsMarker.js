@@ -43,18 +43,18 @@ const CurrentsMarker = ({
     className: 'my-div-icon',
     iconAnchor: [32, 32],
     iconSize: L.point(32, 32),
-    html: `<div class="currents-marker-container loader">Loading...</div>`,
+    html: `<div data-testid="station-${station.id}" class="currents-marker-icon loader">Loading...</div>`,
   });
 
   const icon = L.divIcon({
     className: 'my-div-icon',
     iconAnchor: [16, 0],
     iconSize: L.point(32, 32),
-    html: `<div class=${
-      selected
-        ? 'currents-marker-container selected-marker'
-        : 'currents-marker-container'
-    }><div style="transform: rotate(${rotation}deg) scale(${scale})" transform-origin="center bottom" >${currentsSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
+    html: `<div data-testid="station-${station.id}" class=${
+      selected ? 'currents-marker-icon selected-marker' : 'currents-marker-icon'
+    }><div data-testid="station-${
+      station.id
+    }" style="transform: rotate(${rotation}deg) scale(${scale})" transform-origin="center bottom" >${currentsSvg}</div><span class="currents-marker-label stroke-text">${speed}</span></div>`,
   });
 
   const fetchPredictions = async (interval) => {
@@ -133,11 +133,6 @@ const CurrentsMarker = ({
           adjustedDate
         );
 
-        console.log(
-          station.id,
-          'current values',
-          getCurrentDisplayValues(predictions, adjustedDate)
-        );
         setSpeed(speed);
         setScale(scale);
         // -1 means we're at slack tide

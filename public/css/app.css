@@ -11322,12 +11322,12 @@ tr:nth-child(even) {
   height: 20;
 }
 
-.currents-marker-container path {
-  fill: orange;
+.currents-marker-icon path {
+  fill: #fcb32c;
 }
 
 .currents-marker-label {
-  color: orange;
+  color: #fcb32c;
   font-weight: bold;
   font-size: 1.1rem;
   z-index: 300;
@@ -11339,7 +11339,7 @@ tr:nth-child(even) {
   text-shadow: var(--stroke-width) 0 0 var(--stroke-color), calc(var(--stroke-width) * -1) 0 0 var(--stroke-color), 0 var(--stroke-width) 0 var(--stroke-color), 0 calc(var(--stroke-width) * -1) 0 var(--stroke-color);
 }
 
-.tide-marker-container svg {
+.tide-marker-icon svg {
   border: 2px solid black;
   background-color: cyan;
   width: 15px;
@@ -11361,11 +11361,11 @@ tr:nth-child(even) {
   height: 25px;
 }
 
-.currents-marker-container.loader {
-  color: orange;
+.currents-marker-icon.loader {
+  color: #fcb32c;
 }
 
-.tide-marker-container.loader {
+.tide-marker-icon.loader {
   color: black;
 }
 
