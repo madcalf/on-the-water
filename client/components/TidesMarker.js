@@ -108,7 +108,6 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
 
         const height = getTideDisplayValue(predictions, adjustedDate);
         setHeight(height);
-        console.log(station.id, 'tide value:', height);
       }
     } catch (err) {
       console.error(

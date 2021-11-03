@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { stripTimeFromDate } from '../helpers/util';
 
 // DATE
 const SET_DATE = 'SET_DATE';
@@ -28,7 +29,8 @@ export const setAdjustedDate = (date) => {
 };
 
 // ADJUSTED_DATE reducer
-const adjustedDateReducer = (state = 0, action) => {
+const initState = stripTimeFromDate(new Date());
+const adjustedDateReducer = (state = initState, action) => {
   switch (action.type) {
     case SET_ADJUSTED_DATE:
       return action.date;

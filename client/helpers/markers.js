@@ -18,9 +18,9 @@ export const getCurrentDisplayValues = (predictions, date) => {
 };
 
 export const getCurrentRotation = (prediction) => {
-  if (prediction.Velocity_Major > 0.2) {
+  if (prediction.Velocity_Major > 0.3) {
     return prediction.meanFloodDir;
-  } else if (prediction.Velocity_Major < -0.2) {
+  } else if (prediction.Velocity_Major < -0.3) {
     return prediction.meanEbbDir;
   } else {
     // It's slack. Not sure what rotation we should return here...

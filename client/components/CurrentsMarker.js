@@ -17,6 +17,7 @@ const CurrentsMarker = ({
   selectMarker,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isValidStation, setIsValidStation] = useState(true);
   const [rotation, setRotation] = useState(-999);
   const [speed, setSpeed] = useState(-0);
   const [scale, setScale] = useState(-1);
@@ -71,9 +72,12 @@ const CurrentsMarker = ({
       } else {
         setPredictionsLong(data.current_predictions.cp);
       }
-      setIsLoading(false);
+      setIsValidStation(true);
     } catch (err) {
+      setIsValidStation(false);
       console.error(err.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,9 +137,14 @@ const CurrentsMarker = ({
           adjustedDate
         );
 
+        console.log(station.id, 'current vals', speed, rotation, scale);
         setSpeed(speed);
         setScale(scale);
-        // -1 means we're at slack tide
+        if (!rotation) {
+          setIsValidStation(false);
+        }
+        // Rotation value of -1 indicates we're at slack tide,
+        // so don't change the rotation
         if (rotation > -1) {
           setRotation(rotation);
         }
@@ -150,15 +159,17 @@ const CurrentsMarker = ({
 
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
-    // all markers get the MAX_SLACK data for popup view
-    fetchPredictions('MAX_SLACK');
+    if (isValidStation) {
+      // all markers get the MAX_SLACK data for popup view
+      fetchPredictions('MAX_SLACK');
 
-    // if it's a harmonic station, also get the detailed
-    // interval data for marker rotation
-    if (station.type === 'H') {
-      fetchPredictions('6');
+      // if it's a harmonic station, also get the detailed
+      // interval data for marker rotation
+      if (station.type === 'H') {
+        fetchPredictions('6');
+      }
     }
-  }, [date]);
+  }, [date, isValidStation]);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
@@ -172,22 +183,24 @@ const CurrentsMarker = ({
   }, [marker]);
 
   return (
-    <Marker
-      eventHandlers={{ click: () => handleClick() }}
-      position={[station.lat, station.lng]}
-      icon={isLoading ? loadingIcon : icon}
-    >
-      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
-        <h3 className="kp-popup-header">
-          {station.id} {title} CURRENT
-        </h3>
-        <p className="kp-popup-text">{subtitle}</p>
-        <p className="kp-popup-text">
-          {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
-        </p>
-        {currentsTable ? currentsTable : "Can't show the data"}
-      </Popup>
-    </Marker>
+    isValidStation && (
+      <Marker
+        eventHandlers={{ click: () => handleClick() }}
+        position={[station.lat, station.lng]}
+        icon={isLoading ? loadingIcon : icon}
+      >
+        <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
+          <h3 className="kp-popup-header">
+            {station.id} {title} CURRENT
+          </h3>
+          <p className="kp-popup-text">{subtitle}</p>
+          <p className="kp-popup-text">
+            {station.type === 'H' ? 'Harmonic' : 'Subordinate'}
+          </p>
+          {currentsTable ? currentsTable : "Can't show the data"}
+        </Popup>
+      </Marker>
+    )
   );
 };
 

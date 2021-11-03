@@ -19,7 +19,7 @@ function valueText(value) {
 
 export function TimeSlider({ date, adjustedDate, setAdjustedDate }) {
   const classes = useStyles();
-  let [currentValue, setCurrentValue] = useState(date);
+  let [currentValue, setCurrentValue] = useState(adjustedDate);
 
   function handleChange(event, minutes) {
     const d = addMinutes(new Date(date), minutes);

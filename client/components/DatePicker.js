@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { setDate } from '../store/';
 import { KeyboardDatePicker } from '@material-ui/pickers';
-
-const stripTimeFromDate = (date) => {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-};
+import { stripTimeFromDate } from '../helpers/util';
 
 const DatePicker = (props) => {
   const [selectedDate, setSelectedDate] = useState(() => {
