@@ -106,8 +106,8 @@ export const MapView = (props) => {
       zoomControl={false}
     >
       {/* <MapEventTracker /> */}
-      <ZoomControl position="bottomright" />
-      <LayersControl position="bottomright">
+      <ZoomControl position="topright" />
+      <LayersControl position="topright">
         git{' '}
         <LayersControl.BaseLayer checked name="Esri.WorldImagery">
           <TileLayer
