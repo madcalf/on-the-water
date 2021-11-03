@@ -2,21 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
-import { Icon } from 'leaflet';
 import axios from 'axios';
-import { format, addMinutes, closestIndexTo } from 'date-fns';
+import { format } from 'date-fns';
 import { setMarker } from '../store';
 import { getTidesIcon } from '../helpers/getSvg';
-import {
-  getTideDisplayValue,
-  getClosestTidePrediction,
-} from '../helpers/markers';
+import { getTideDisplayValue } from '../helpers/markers';
 
 const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const map = useMap();
 
   // rotation of marker icon
   const [isLoading, setIsLoading] = useState(true);
+  const [isValidStation, setIsValidStation] = useState(true);
   const [scale, setScale] = useState(0);
   const [selected, setselected] = useState(false);
   const [height, setHeight] = useState(0);
@@ -32,8 +29,6 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
   const name = station.name.split(',');
   const title = name.shift();
   const subtitle = name.join(',');
-
-  const iconUrl = 'images/tide_low.png';
 
   const loadingIcon = L.divIcon({
     className: 'my-div-icon',
@@ -62,8 +57,15 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
         `/api/tides/${station.id}/${dateStr}/${rangeStr}/${interval}`
       );
       setPredictions(data.predictions);
+      setIsValidStation(true);
     } catch (err) {
-      console.error(err.response.data.message);
+      if (err.response) {
+        setIsValidStation(false);
+        console.error(err.response.data.message);
+      } else
+        console.error(
+          `TidesMarker ${station.id} had a problem fetching predictions. ${err}`
+        );
     } finally {
       setIsLoading(false);
     }
@@ -119,8 +121,10 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
 
   // Update all markers prediction data whenever the date is changed
   useEffect(() => {
-    fetchPredictions();
-  }, [date]);
+    if (isValidStation) {
+      fetchPredictions();
+    }
+  }, [date, isValidStation]);
 
   // update the currents table when new predictions data is loaded
   useEffect(() => {
@@ -133,37 +137,26 @@ const TidesMarker = ({ station, date, adjustedDate, marker, selectMarker }) => {
     setselected(marker === station.id);
   }, [marker]);
 
-  // ======= TEMP ======= //
-  useEffect(() => {
-    if (station.id === 'SFB1203') {
-      console.log(`CurrentMarker ${station.id} mount`);
-    }
-  }, []);
-  useEffect(() => {
-    if (station.id === 'SFB1203') {
-      console.count(`CurrentMarker ${station.id} render`);
-    }
-  });
-  // ======= END TEMP ======= //
-
   return (
-    <Marker
-      eventHandlers={{ click: () => handleClick() }}
-      className="marker-class"
-      position={[station.lat, station.lng]}
-      icon={isLoading ? loadingIcon : icon}
-    >
-      <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
-        <h3 className="kp-popup-header">
-          {station.id} {title}
-        </h3>
-        <p className="kp-popup-text">{subtitle}</p>
-        <p className="kp-popup-text">
-          TIDE {station.type === 'R' ? 'Harmonic' : 'Subordinate'}
-        </p>
-        {tideTable ? makeTable(tideTable) : "Can't show the data"}
-      </Popup>
-    </Marker>
+    isValidStation && (
+      <Marker
+        eventHandlers={{ click: () => handleClick() }}
+        className="marker-class"
+        position={[station.lat, station.lng]}
+        icon={isLoading ? loadingIcon : icon}
+      >
+        <Popup className="kp-popup" maxWidth={500} maxHeight={300}>
+          <h3 className="kp-popup-header">
+            {station.id} {title}
+          </h3>
+          <p className="kp-popup-text">{subtitle}</p>
+          <p className="kp-popup-text">
+            TIDE {station.type === 'R' ? 'Harmonic' : 'Subordinate'}
+          </p>
+          {tideTable ? makeTable(tideTable) : "Can't show the data"}
+        </Popup>
+      </Marker>
+    )
   );
 };
 

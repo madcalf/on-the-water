@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Marker, Popup, useMapEvents } from 'react-leaflet';
+import { Marker, Popup } from 'react-leaflet';
 import * as L from 'leaflet';
 import { getCurrentsIcon } from '../helpers/getSvg';
+import { format } from 'date-fns';
 import axios from 'axios';
-import { format, closestIndexTo } from 'date-fns';
-import { scaleLinear } from 'd3-scale';
 import { setMarker } from '../store';
 import { getCurrentDisplayValues } from '../helpers/markers';
 
@@ -74,8 +73,13 @@ const CurrentsMarker = ({
       }
       setIsValidStation(true);
     } catch (err) {
-      setIsValidStation(false);
-      console.error(err.response.data.message);
+      if (err.response) {
+        setIsValidStation(false);
+        console.error(err.response.data.message);
+      } else
+        console.error(
+          `CurrentsMarker ${station.id} had a problem fetching predictions. ${err}`
+        );
     } finally {
       setIsLoading(false);
     }
@@ -137,7 +141,6 @@ const CurrentsMarker = ({
           adjustedDate
         );
 
-        console.log(station.id, 'current vals', speed, rotation, scale);
         setSpeed(speed);
         setScale(scale);
         if (!rotation) {
